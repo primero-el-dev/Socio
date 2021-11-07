@@ -1,0 +1,29 @@
+App\Entity\User:
+  attributes:
+    normalization_context:
+      groups: ['read:user']
+    denormalization_context:
+      groups: ['write:user']
+  collectionOperations:
+    get:
+      normalization_context:
+        groups: ['read:user']
+    post:
+      denormalization_context:
+        groups: ['insert:user']
+    me:
+      path: /users/me
+      method: GET
+      controller: App\Controller\User\MeController
+      normalization_context:
+        groups: ['read:user:self']
+  itemOperations:
+    get:
+      normalization_context:
+        groups: ['read:user']
+    put:
+      denormalization_context:
+        groups: ['update:user']
+    delete:
+      denormalization_context:
+        groups: ['delete:user']

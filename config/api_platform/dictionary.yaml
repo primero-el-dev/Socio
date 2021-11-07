@@ -1,0 +1,8 @@
+App\Entity\Dictionary:
+  collectionOperations:
+    get: ~
+    post: ~
+  itemOperations:
+    get: ~
+    put: ~
+    delete: ~
