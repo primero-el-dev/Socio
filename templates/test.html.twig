@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ResetPasswordController!{% endblock %}
+
+{% block body %}
+<form name="reset_password" method="post"><div id="reset_password"><div><label for="reset_password_password_first" class="required">First</label><input type="password" id="reset_password_password_first" name="reset_password[password][first]" required="required" /></div><div><label for="reset_password_password_second" class="required">Second</label><input type="password" id="reset_password_password_second" name="reset_password[password][second]" required="required" /></div><input type="hidden" id="reset_password__token" name="reset_password[_token]" value="3078c0450f6.yq3FsFxRZno96gpbi8VlwxXUSKSpxTyvojUX-3NxGmo.k_eT6S8mM0JVrHkysqpStUbtBejn_EjmxmJtmR0gK1-85YaHOwc0LH_eSw" /></div>
+<button type="submit">Submit</button>
+</form>
+{% endblock %}

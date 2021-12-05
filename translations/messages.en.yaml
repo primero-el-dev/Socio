@@ -1,0 +1,93 @@
+common:
+  yes: 'yes'
+  no: 'no'
+  submit: 'Submit'
+  success: 'Success'
+  error: 'Error'
+
+notification:
+  error:
+    phoneMissing: 'Phone missing. Please provide a phone number.'
+    smsCodeMissing: 'Sms code is missing.'
+    smsCodeInvalid: 'Sms code is invalid.'
+    groupMembershipRequestMissing: 'Group membership request wasn''t found.'
+  info:
+    phoneAlreadyVerified: 'Your phone number has been already verified.'
+    groupMembershipRequested: 'You have already requested membership to this group.'
+    groupMembershipRequestReady: 
+      subject: 'Membership request'
+      content: 'You''ve requested membership for a group "%s".'
+    groupMembershipAccepted:
+      subject: 'Membership accepted'
+      content: 'You''re now a member of a group "%s".'
+  success:
+    resetPassword: 'Password was changed successfully.'
+    forgotPassword: "We've send You an email for changing password."
+    registered: "Your account has been created successfully. We've send verification email to You."
+    verifyEmail: 'Your email has been verified.'
+    commentAlreadyReported: 'Comment has been already reported.'
+    phoneVerificationSmsSend: 'Check Your phone for sms code.'
+    phoneVerifiedSuccessfully: 'You phone number has been verified successfully.'
+    membershipRequestedSuccessfully: "You've requested a membership for group successfully."
+    groupMemberAccepted: 'You''re now a member of a "%s".'
+
+email:
+  registrationVerification:
+    subject: 'Email verification'
+    message: 'Click link below to verify your email. This email will be active for only 2 hours.'
+    cta: 'Click me!'
+  forgotPassword:
+    subject: 'Reset password'
+    message: 'Click link below to reset your password. This link will be active for only 2 hours.'
+    cta: 'Click me!'
+
+entity:
+  comment:
+    content:
+      notBlank:
+        message: 'Comment message is required.'
+      length:
+        maxMessage: 'Comment is too long.'
+  user:
+    email:
+      notBlank:
+        message: 'Email address is required.'
+      email:
+        message: 'Email address has invalid format.'
+      length:
+        minMessage: 'Email address is too short.'
+        maxMessage: 'Email address is too long.'
+      uniqueIgnoreDeleted:
+        message: 'Email already exists in our database.'
+    name:
+      regex:
+        message: 'Name may contain only letters.'
+      length:
+        maxMessage: 'Name is too long.'
+    surname:
+      regex:
+        message: 'Surname may contain only letters and dashes.'
+      length:
+        maxMessage: 'Surname is too long.'
+    phone:
+      regex:
+        message: 'Phone number has inproper format.'
+      uniqueIgnoreDeleted:
+        message: 'Phone already exists in our database.'
+    password:
+      label: 'Password'
+      notBlank:
+        message: 'Password is required'
+      length:
+        minMessage: 'Password must be 15 characters minimum.'
+        maxMessage: 'Password must be 60 characters maximum.'
+      notMatch:
+        message: 'Both passwords must be the same.'
+    repeatPassword:
+      label: 'Repeat password'
+    birth:
+      notNull:
+        message: 'Birth date is required.'
+      date:
+        message: 'Birth date must be a proper date.'
+

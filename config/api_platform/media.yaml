@@ -1,0 +1,25 @@
+App\Entity\MediaObject:
+  iri: http://schema.org/MediaObject
+  normalization_context: 'groups:media_object:read'
+  itemOperations:
+    get: ~
+  collectionOperations:
+    get:
+      path: /media
+    post:
+      # path: /media
+      controller: App\Controller\CreateMediaObjectController
+      deserialize: false
+      validation_groups: 
+        - Default
+        - media_object_create
+      openapi_context:
+        requestBody:
+          content:
+            multipart/form-data:
+              schema:
+                type: object
+                properties:
+                  file:
+                    type: string,
+                    format: binary

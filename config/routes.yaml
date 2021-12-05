@@ -2,8 +2,45 @@
 #    path: /
 #    controller: App\Controller\DefaultController::index
 
+# Auth
+
 api_login_check:
   path: /api/login
+
+api_registraition_check:
+  path: /api/register
+  methods: [POST]
+  controller: App\Controller\Auth\RegistrationController
+
+api_email_verification_check:
+  path: /api/verify-email
+  methods: [GET]
+  controller: App\Controller\Auth\EmailVerificationController
+
+api_phone_verification_sms:
+  path: /api/send-verify-sms
+  methods: [POST]
+  controller: App\Controller\Auth\SendPhoneVerificationSmsController
+
+api_phone_verification_check:
+  path: /api/verify-phone
+  methods: [POST]
+  controller: App\Controller\Auth\PhoneVerificationController
+
+api_forgot_password:
+  path: /api/forgot-password
+  methods: [POST]
+  controller: App\Controller\Auth\ForgotPasswordController
+
+page_reset_password:
+  path: /reset-password
+  methods: [GET]
+  controller: App\Controller\Auth\ResetPasswordPageController
+
+api_reset_password:
+  path: /api/reset-password
+  methods: [POST]
+  controller: App\Controller\Auth\ResetPasswordController
 
 gesdinet_jwt_refresh_token:
   path: /api/token/refresh

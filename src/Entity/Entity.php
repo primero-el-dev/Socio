@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-abstract class Entity
+interface Entity
 {
-	abstract public function getId(): ?int;
+	public function getId(): ?int;
 }

@@ -1,0 +1,43 @@
+App\Entity\Group:
+  attributes:
+    normalization_context:
+      groups: ['read:group']
+    denormalization_context:
+      groups: ['write:group']
+  collectionOperations:
+    get:
+      security: "is_granted('READ_GROUP')"
+      normalization_context:
+        groups: ['read:group']
+    post:
+      # security: "is_granted('GROUP_CREATE')"
+      denormalization_context:
+        groups: ['insert:group', 'write:group']
+  itemOperations:
+    get:
+      security: "is_granted('READ_GROUP', object)"
+      normalization_context:
+        groups: ['read:group']
+    put:
+      security: "is_granted('UPDATE_GROUP', object)"
+      denormalization_context:
+        groups: ['update:group', 'write:group']
+    delete:
+      security: "is_granted('DELETE_GROUP', object)"
+      denormalization_context:
+        groups: ['delete:group', 'write:group']
+    request_membership:
+      security: "is_granted('REQUEST_MEMBERSHIP_GROUP', object)"
+      path: /groups/{id}/request-membership
+      method: POST
+      controller: App\Controller\Group\RequestGroupMembershipController
+      requirements:
+        id: \d+
+    accept_membership:
+      # security: "is_granted('ACCEPT_MEMBERSHIP_RELATION', object)"
+      path: /groups/{id}/accept-membership/{userId}
+      method: POST
+      controller: App\Controller\Group\AcceptGroupMembershipController
+      requirements:
+        id: \d+
+        userId: \d+

@@ -1,0 +1,8 @@
+App\Entity\Thread:
+  collectionOperations:
+    get: ~
+    post: ~
+  itemOperations:
+    get: ~
+    put: ~
+    delete: ~

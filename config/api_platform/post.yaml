@@ -1,0 +1,28 @@
+App\Entity\Post:
+  attributes:
+    normalization_context:
+      groups: ['read:post']
+    denormalization_context:
+      groups: ['write:post']
+  collectionOperations:
+    get:
+      # security: "is_granted('POST_SHOW')"
+      normalization_context:
+        groups: ['read:post']
+    post:
+      # security: "is_granted('POST_CREATE')"
+      denormalization_context:
+        groups: ['write:post', 'insert:post']
+  itemOperations:
+    get:
+      # security: "is_granted('POST_SHOW', object)"
+      normalization_context:
+        groups: ['read:post']
+    put:
+      # security: "is_granted('POST_UPDATE', object)"
+      denormalization_context:
+        groups: ['write:post', 'update:post']
+    delete:
+      # security: "is_granted('POST_DELETE', object)"
+      denormalization_context:
+        groups: ['write:post', 'delete:post']

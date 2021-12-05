@@ -5,15 +5,17 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Entity\Entity;
+use App\Entity\Interface\HasConfiguration;
+use App\Entity\Timeline;
+use App\Entity\Trait\Configuration;
 use App\Entity\Trait\Create;
 use App\Entity\Trait\SoftDelete;
 use App\Entity\Trait\Update;
 use App\Repository\UserRepository;
+use App\Security\Roles;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\AttributeOverride;
-use Doctrine\ORM\Mapping\AttributeOverrides;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -23,8 +25,11 @@ use Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-/**
+/** 
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="app_user")
  * @ORM\HasLifecycleCallbacks()
@@ -34,12 +39,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
     'name' => 'partial',
     'surname' => 'partial',
 ])]
-class User extends Entity 
-implements UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface
+class User implements Entity, HasConfiguration, UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface
 {
     use Create;
     use Update;
     use SoftDelete;
+    use Configuration;
 
     /**
      * @ORM\Id
@@ -47,68 +52,129 @@ implements UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface
      * @ORM\Column(type="integer")
      */
     #[ApiProperty(identifier: true)]
-    private ?int $id;
+    protected ?int $id;
 
     /**
      * @ORM\Column(type="string", length=180)
      */
-    #[Groups(['read:user', 'insert:user'])]
-    private ?string $email;
+    #[
+        Groups(['read:user:self', 'read:user:email', 'insert:user']),
+        Assert\NotBlank(message: 'entity.user.email.notBlank.message'),
+        Assert\Length(
+            min: 5,
+            max: 255,
+            minMessage: 'entity.user.email.length.minMessage',
+            maxMessage: 'entity.user.email.length.maxMessage'
+        ),
+        Assert\Email(message: 'entity.user.email.email.message')
+    ]
+    protected ?string $email;
 
     /**
      * @ORM\Column(type="json")
      */
     #[Groups(['read:user:self'])]
-    private array $roles = [];
+    protected array $roles = [];
 
     /**
      * @ORM\Column(type="string")
      */
-    #[Groups(['write:user'])]
-    private ?string $password;
+    #[Groups(['write:user', 'admin:read'])]
+    protected ?string $password;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    #[Groups(['read:user', 'insert:user'])]
-    private ?string $name;
+    #[Groups(['read:user:self', 'read:user:name', 'insert:user'])]
+    protected ?string $name;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    #[Groups(['read:user', 'insert:user'])]
-    private ?string $surname;
+    #[Groups(['read:user:self', 'read:user:surname', 'insert:user'])]
+    protected ?string $surname;
 
     /**
      * @ORM\Column(type="date_immutable")
      */
-    #[Groups(['read:user', 'insert:user'])]
-    private ?\DateTimeInterface $birth;
+    #[
+        Groups(['read:user', 'read:user:birth', 'insert:user']),
+        Assert\NotNull(message: 'entity.user.birth.notNull.message'),
+        Assert\Date(message: 'entity.user.birth.date.message')
+    ]
+    protected ?\DateTimeInterface $birth;
 
     /**
      * @ORM\OneToMany(targetEntity=Post::class, mappedBy="author")
      */
-    private ArrayCollection $posts;
+    protected Collection $posts;
 
     /**
      * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="author")
      */
-    private ArrayCollection $comments;
+    protected Collection $comments;
 
     /**
-     * @ORM\Column(type="json", options={"default": "[]"})
+     * @ORM\Column(type="string", length=20, nullable=true)
      */
-    private array $permissions = [];
+    #[Groups('read:user:self', 'read:user:phone', 'write:user')]
+    protected ?string $phone;
 
     /**
-     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="whom")
+     * @ORM\OneToMany(targetEntity=Reaction::class, mappedBy="author")
      */
-    private ArrayCollection $relationsWhereSubject;
+    protected Collection $reactions;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default":false})
+     */
+    #[Groups(['read:user:self'])]
+    protected bool $verified = false;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Timeline::class, mappedBy="user")
+     */
+    protected ?Timeline $timeline;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="recipient")
+     */
+    protected Collection $notifications;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default":false})
+     */
+    #[Groups(['read:user:self'])]
+    protected bool $phoneVerified = false;
+
+    /**
+     * @ORM\Column(type="json", options={"default":"[]"})
+     */
+    #[Groups(['read:user:self'])]
+    protected array $configuration = [];
+
+    #[ApiProperty(iri: 'http://schema.org/contentUrl')]
+    #[Groups(['book:read'])]
+    public ?string $contentUrl = null;
+
+    /**
+     * @Vich\UploadableField(mapping="media_object", fileNameProperty="filePath")
+     */
+    #[Groups(['book:write'])]
+    public ?File $file = null;
+
+    /**
+     * @ORM\Column(nullable=true)
+     */
+    public ?string $filePath = null;
 
     public function __construct()
     {
+        $this->roles = Roles::getDefaultForUser();
         $this->posts = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->reactions = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     public static function createFromPayload($id, array $payload)
@@ -167,22 +233,22 @@ implements UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
-        $roles[] = 'ROLE_USER';
+        $this->roles[] = 'ROLE_USER';
+        $this->roles = array_unique(array_values($this->roles));
 
-        return array_unique($roles);
+        return $this->roles;
     }
 
     public function setRoles(array $roles): self
     {
-        $this->roles = array_unique($roles);
+        $this->roles = array_unique(array_values($roles));
 
         return $this;
     }
 
     public function addRole(string $role): self
     {
-        if (!is_array($role, $this->roles)) {
+        if (!in_array($role, $this->roles)) {
             $this->roles[] = $role;
         }
 
@@ -194,6 +260,11 @@ implements UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface
         $this->roles = array_filter($this->roles, fn($r) => $r !== $role);
 
         return $this;
+    }
+
+    public function hasRole($role): bool
+    {
+        return in_array($role, $this->roles);
     }
 
     /**
@@ -255,12 +326,12 @@ implements UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface
         return $this;
     }
 
-    public function getBirth(): ?\DateTimeImmutable
+    public function getBirth(): ?\DateTimeInterface
     {
         return $this->birth;
     }
 
-    public function setBirth(\DateTimeImmutable $birth): self
+    public function setBirth(\DateTimeInterface $birth): self
     {
         $this->birth = $birth;
 
@@ -332,42 +403,106 @@ implements UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface
         return $this;
     }
 
-    public function getPermissions(): ?array
+    public function getPhone(): ?string
     {
-        return $this->permissions;
+        return $this->phone;
     }
 
-    public function setPermissions(array $permissions): self
+    public function setPhone(?string $phone): self
     {
-        $this->permissions = $permissions;
+        $this->phone = $phone;
 
         return $this;
     }
 
-    public function hasPermission(string $permission): bool
+    /**
+     * @return Collection|Reaction[]
+     */
+    public function getReactions(): Collection
     {
-        if (!isset($this->permissions[$permission])) {
-            return false;
-        }
-
-        return (bool) is_string($this->permissions[$permission])
-            ? ($this->permissions[$permission] <= (new \DateTime())->format('Y-m-d H:i:s'))
-            : $this->permissions[$permission];
+        return $this->reactions;
     }
 
-    public function removePermission(string $permission, ?\DateTime $deadline = null): self
+    public function addReaction(Reaction $reaction): self
     {
-        if (isset($this->permissions[$permission])) {
-            $this->permissions[$permission] = 
-                ($deadline) ? $deadline->format('Y-m-d H:i:s') : false;
+        if (!$this->reactions->contains($reaction)) {
+            $this->reactions[] = $reaction;
+            $reaction->setAuthor($this);
         }
 
         return $this;
     }
 
-    public function addPermission(string $permission): self
+    public function removeReaction(Reaction $reaction): self
     {
-        $this->permissions[$permission] = true;
+        if ($this->reactions->removeElement($reaction)) {
+            if ($reaction->getAuthor() === $this) {
+                $reaction->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getVerified(): ?bool
+    {
+        return $this->verified;
+    }
+
+    public function setVerified(bool $verified): self
+    {
+        $this->verified = $verified;
+
+        return $this;
+    }
+
+    public function getTimeline(): ?Timeline
+    {
+        return $this->timeline;
+    }
+
+    public function setTimeline(Timeline $timeline): self
+    {
+        $this->timeline = $timeline;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Notification[]
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notification $notification): self
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications[] = $notification;
+            $notification->addRecipient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): self
+    {
+        if ($this->notifications->removeElement($notification)) {
+            $notification->removeRecipient($this);
+        }
+
+        return $this;
+    }
+
+    public function getPhoneVerified(): ?bool
+    {
+        return $this->phoneVerified;
+    }
+
+    public function setPhoneVerified(bool $phoneVerified): self
+    {
+        $this->phoneVerified = $phoneVerified;
 
         return $this;
     }

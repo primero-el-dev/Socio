@@ -3,13 +3,16 @@
 namespace App\Entity;
 
 use App\Entity\Entity;
+use App\Entity\Interface\HasComments;
 use App\Entity\Trait\Create;
 use App\Entity\Trait\SoftDelete;
 use App\Entity\Trait\Update;
 use App\Repository\GroupRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=GroupRepository::class)
@@ -17,7 +20,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\HasLifecycleCallbacks()
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
-class Group extends Entity
+class Group implements Entity, HasComments
 {
     use Create;
     use Update;
@@ -33,26 +36,30 @@ class Group extends Entity
     /**
      * @ORM\Column(type="string", length=255)
      */
+    #[Groups(['write:group', 'read:group'])]
     private ?string $name;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
+    #[Groups(['insert:group', 'read:group'])]
     private ?string $slug;
 
     /**
      * @ORM\Column(type="text")
      */
+    #[Groups(['write:group', 'read:group'])]
     private ?string $description;
 
     /**
-     * @ORM\OneToMany(targetEntity=Thread::class, mappedBy="group")
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="_group")
      */
-    private ArrayCollection $threads;
+    private Collection $comments;
 
     public function __construct()
     {
         $this->threads = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -97,29 +104,36 @@ class Group extends Entity
     }
 
     /**
-     * @return Collection|Thread[]
+     * @return Collection|Comment[]
      */
-    public function getThreads(): Collection
+    public function getComments(): Collection
     {
-        return $this->threads;
+        return $this->comments;
     }
 
-    public function addThread(Thread $thread): self
+    public function setComments(Collection $comments): self
     {
-        if (!$this->threads->contains($thread)) {
-            $this->threads[] = $thread;
-            $thread->setGroup($this);
+        $this->comments = $comments;
+
+        return $this;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setGroup($this);
         }
 
         return $this;
     }
 
-    public function removeThread(Thread $thread): self
+    public function removeComment(Comment $comment): self
     {
-        if ($this->threads->removeElement($thread)) {
+        if ($this->comments->removeElement($comment)) {
             // set the owning side to null (unless already changed)
-            if ($thread->getGroup() === $this) {
-                $thread->setGroup(null);
+            if ($comment->getGroup() === $this) {
+                $comment->setGroup(null);
             }
         }
 

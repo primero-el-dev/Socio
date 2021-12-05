@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\Entity;
+use App\Entity\Interface\HasComments;
 use App\Entity\Trait\Create;
 use App\Entity\Trait\SoftDelete;
 use App\Entity\Trait\Update;
@@ -17,7 +18,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\HasLifecycleCallbacks()
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
-class Thread extends Entity
+class Thread implements Entity, HasComments
 {
     use Create;
     use Update;
@@ -41,13 +42,19 @@ class Thread extends Entity
     private ?Group $group;
 
     /**
-     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="thread")
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="thread")
      */
-    private ArrayCollection $posts;
+    private Collection $comments;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $description;
 
     public function __construct()
     {
         $this->posts = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -80,31 +87,49 @@ class Thread extends Entity
     }
 
     /**
-     * @return Collection|Post[]
+     * @return Collection|Comment[]
      */
-    public function getPosts(): Collection
+    public function getComments(): Collection
     {
-        return $this->posts;
+        return $this->comments;
     }
 
-    public function addPost(Post $post): self
+    public function setComments(Collection $comments): self
     {
-        if (!$this->posts->contains($post)) {
-            $this->posts[] = $post;
-            $post->setThread($this);
+        $this->comments = $comments;
+
+        return $this;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setThread($this);
         }
 
         return $this;
     }
 
-    public function removePost(Post $post): self
+    public function removeComment(Comment $comment): self
     {
-        if ($this->posts->removeElement($post)) {
-            // set the owning side to null (unless already changed)
-            if ($post->getThread() === $this) {
-                $post->setThread(null);
+        if ($this->comments->removeElement($comment)) {
+            if ($comment->getThread() === $this) {
+                $comment->setThread(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }

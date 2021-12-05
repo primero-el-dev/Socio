@@ -10,10 +10,10 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass=DictionaryRepository::class)
  * @ORM\DiscriminatorColumn(name="type", type="string")
  * @ORM\DiscriminatorMap({
-    "RELATION" = "Relation"
-})
+ *     "RELATION" = "Relation"
+ * })
  */
-class Dictionary extends Entity
+class Dictionary implements Entity
 {
     /**
      * @ORM\Id

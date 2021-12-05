@@ -20,3 +20,6 @@ doctrine:
             softdeleteable:
                 class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
                 enabled: true
+        # dql:
+        #     string_functions:
+        #         JSON_CONTAINS: App\Doctrine\Function\JsonContains

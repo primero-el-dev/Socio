@@ -8,18 +8,20 @@ use App\Entity\Trait\Create;
 use App\Entity\Trait\SoftDelete;
 use App\Entity\Trait\Update;
 use App\Entity\User;
+use App\Entity\Interface\UserOwned;
 use App\Repository\PostRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=PostRepository::class)
  * @ORM\HasLifecycleCallbacks()
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
-class Post extends Entity
+class Post implements Entity, UserOwned
 {
     use Create;
     use Update;
@@ -35,16 +37,19 @@ class Post extends Entity
     /**
      * @ORM\Column(type="string", length=255)
      */
+    #[Groups('write:post', 'read:post')]
     private ?string $title;
 
     /**
      * @ORM\Column(type="text")
      */
+    #[Groups('write:post', 'read:post')]
     private ?string $content;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="posts")
      */
+    #[Groups('insert:post', 'read:post')]
     private ?User $author;
 
     /**
@@ -55,7 +60,7 @@ class Post extends Entity
     /**
      * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="post")
      */
-    private ArrayCollection $comments;
+    private Collection $comments;
 
     public function __construct()
     {

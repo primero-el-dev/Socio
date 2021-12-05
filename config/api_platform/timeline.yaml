@@ -1,0 +1,6 @@
+App\Entity\Timeline:
+  itemOperations:
+    get:
+      security: "is_granted('READ_TIMELINE', object)"
+      normalization_context:
+        groups: ['read:timeline']

@@ -9,9 +9,9 @@ trait SoftDelete
 	/**
 	 * @ORM\Column(type="datetime_immutable", nullable=true, options={"default":null})
 	 */
-	protected $deletedAt;
+	protected ?\DateTimeInterface $deletedAt;
 
-    public function setDeletedAt(DateTime $deletedAt = null)
+    public function setDeletedAt(\DateTimeInterface $deletedAt = null)
     {
         $this->deletedAt = $deletedAt;
 

@@ -19,7 +19,10 @@ class BaseVoter extends Voter
 
     protected function supports(string $attribute, $subject): bool
     {
-        return in_array($attribute, $this->getRolesForSubject($object));
+        return in_array($attribute, 
+            // $this->getRolesForSubject($subject)
+            []
+        );
     }
 
     protected function getRolesForSubject($object): array
@@ -39,12 +42,10 @@ class BaseVoter extends Voter
 
     protected function uncamelize(string $string, string $splitter = '_'): string
     {
-        $camel = preg_replace(
-            '/(?!^)[[:upper:]][[:lower:]]/', '$0', 
-            preg_replace('/(?!^)[[:upper:]]+/', $splitter.'$0', $camel)
-        );
+        $string = preg_replace('/(?!^)[[:upper:]]+/', $splitter.'$0', $string);
+        $string = preg_replace('/(?!^)[[:upper:]][[:lower:]]/', '$0', $string);
 
-        return strtoupper($camel);
+        return strtoupper($string);
     }
 
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool

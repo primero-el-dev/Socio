@@ -24,7 +24,7 @@ class LoginController extends AbstractController
         if ($user && password_verify($password, $user->getPassword())) {
             return new JsonResponse([
                 'email' => $email, 
-                'password' => $user->getRoles(),
+                'roles' => $user->getRoles(),
             ]);
         }
 

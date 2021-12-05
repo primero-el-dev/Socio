@@ -1,0 +1,12 @@
+framework:
+    notifier:
+        texter_transports:
+            sinch: '%env(SINCH_DSN)%'
+        channel_policy:
+            # use chat/slack, chat/telegram, sms/twilio or sms/nexmo
+            urgent: ['sms/sinch']
+            high: ['sms/sinch']
+            medium: ['sms/sinch']
+            low: ['sms/sinch']
+        # admin_recipients:
+            # - { email: '1234567890localhost@gmail.com', phone: 536343411 }

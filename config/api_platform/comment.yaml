@@ -1,0 +1,58 @@
+App\Entity\Comment:
+  attributes:
+    normalization_context:
+      groups: ['read:comment']
+    denormalization_context:
+      groups: ['write:comment']
+  collectionOperations:
+    get:
+      security: "is_granted('LIST_COMMENT')"
+      normalization_context:
+        groups: ['read:comment']
+    post:
+      security: "is_granted('CREATE_COMMENT')"
+      denormalization_context:
+        groups: ['insert:comment', 'write:comment']
+      controller: App\Controller\Comment\CreateCommentController
+  itemOperations:
+    get:
+      security: "is_granted('READ_COMMENT', object)"
+      normalization_context:
+        groups: ['read:comment']
+    put:
+      security: "is_granted('UPDATE_COMMENT', object)"
+      denormalization_context:
+        groups: ['update:comment', 'write:comment']
+    delete:
+      security: "is_granted('DELETE_COMMENT', object)"
+      denormalization_context:
+        groups: ['delete:comment', 'write:comment']
+    react:
+      security: "is_granted('REACT_COMMENT', object)"
+      path: /comments/{id}/react/{reaction}
+      method: POST
+      controller: App\Controller\Comment\ReactCommentController
+      requirements:
+        id: \d+
+        reaction: \w+
+    report:
+      security: "is_granted('REPORT_COMMENT')"
+      path: /comments/{id}/report
+      method: POST
+      controller: App\Controller\Comment\ReportCommentController
+      requirements:
+        id: \d+
+    approve:
+      security: "is_granted('APPROVE_COMMENT')"
+      path: /comments/{id}/approve
+      method: PUT
+      controller: App\Controller\Comment\ApproveCommentController
+      requirements:
+        id: \d+
+    ban:
+      security: "is_granted('BAN_COMMENT')"
+      path: /comments/{id}/ban
+      method: PUT
+      controller: App\Controller\Comment\BanCommentController
+      requirements:
+        id: \d+

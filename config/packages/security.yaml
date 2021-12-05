@@ -6,6 +6,7 @@ security:
         App\Entity\User:
             algorithm: auto
 
+
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         # used to reload user from session & other features (e.g. switch_user)
@@ -20,6 +21,8 @@ security:
         jwt:
             lexik_jwt:
                 class: App\Entity\User
+        # used to reload user from session & other features (e.g. switch_user)
+        # used to reload user from session & other features (e.g. switch_user)
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -60,6 +63,9 @@ security:
     access_control:
         - { path: ^/api/token/refresh, roles: PUBLIC_ACCESS }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/register, roles: PUBLIC_ACCESS }
+        - { path: ^/api/verify-email, roles: PUBLIC_ACCESS }
+        - { path: ^/api/forgot-password, roles: PUBLIC_ACCESS }
         - { path: ^/api$,       roles: PUBLIC_ACCESS }
         # - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api,       roles: ROLE_USER }

@@ -1,0 +1,6 @@
+{% extends 'emails/layout.html.twig' %}
+
+{% block body %}
+{{ 'email.registrationVerification.message'|trans }}
+<a href="{{ link }}">{{ 'email.registrationVerification.cta'|trans }}</a>
+{% endblock %}

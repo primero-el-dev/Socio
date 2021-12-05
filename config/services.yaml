@@ -35,3 +35,12 @@ services:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
             - [ setAnnotationReader, [ '@annotation_reader' ] ]
+
+    # DataTransformers
+    App\DataTransformer\UserOwnedEntityDataTransformer: ~
+
+    App\Serializer\UserGroupsContextBuilder:
+        decorates: 'api_platform.serializer.context_builder'
+        arguments: [ '@App\Serializer\UserGroupsContextBuilder.inner' ]
+        autoconfigure: false
+    
