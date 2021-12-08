@@ -102,6 +102,24 @@ class UserSubjectRelationRepository extends ServiceEntityRepository
         ));
     }
 
+    public function deleteWhere(
+        int $userId, 
+        string $action, 
+        string $subjectIri
+    ): void
+    {
+        $this->createQueryBuilder('r')
+            ->delete()
+            ->where('r.who = :userId')
+            ->andWhere('r.action = :action')
+            ->andWhere('r.subjectIri = :subjectIri')
+            ->setParameter('userId', $userId)
+            ->setParameter('action', $action)
+            ->setParameter('subjectIri', $subjectIri)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function getAdminsForIri(string $subjectIri): array
     {
         $relation = $this->findBy([

@@ -34,7 +34,7 @@ App\Entity\Group:
       requirements:
         id: \d+
     accept_membership:
-      # security: "is_granted('ACCEPT_MEMBERSHIP_RELATION', object)"
+      security: "is_granted('ACCEPT_MEMBERSHIP_RELATION', [object, userId])"
       path: /groups/{id}/accept-membership/{userId}
       method: POST
       controller: App\Controller\Group\AcceptGroupMembershipController

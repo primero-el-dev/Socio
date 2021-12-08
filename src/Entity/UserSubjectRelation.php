@@ -87,18 +87,6 @@ class UserSubjectRelation implements Entity
         return $this;
     }
 
-    public function getWhom(): ?User
-    {
-        return $this->whom;
-    }
-
-    public function setWhom(User $whom): self
-    {
-        $this->whom = $whom;
-
-        return $this;
-    }
-
     public function getDenied(): ?bool
     {
         return $this->denied;
