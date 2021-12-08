@@ -91,6 +91,28 @@ class RegistrationDataValidator extends DataValidator
         		new Date(message: $this->translator->trans(
         			'entity.user.birth.date.message')),
     		],
+    		'slug' => [
+				new Regex(
+					pattern: '/^[\w\d]+$/',
+					message: $this->translator->trans(
+					'entity.user.slug.regex.message')
+				),
+				new Length(
+					min: 5,
+					max: 60,
+					minMessage: $this->translator->trans(
+					'entity.user.slug.max.minMessage'),
+					maxMessage: $this->translator->trans(
+					'entity.user.slug.max.maxMessage')
+				),
+		        new UniqueIgnoreDeleted(
+		        	className: User::class,
+		        	valueColumn: 'slug',
+		        	message: $this->translator->trans(
+		        		'entity.user.slug.uniqueIgnoreDeleted.message'),
+		        	entityManager: $this->entityManager
+		        ),
+			],
 		];
 	}
 

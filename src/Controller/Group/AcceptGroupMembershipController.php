@@ -22,13 +22,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class AcceptGroupMembershipController extends AbstractController
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private MessageBusInterface $eventBus,
-        private UserSubjectRelationRepository $relationRepository,
         private TranslatorInterface $translator,
-        private IriConverterInterface $iriConverter,
         private UserRepository $userRepository,
-        private Security $security,
         private PermissionManagerFacade $permissionManager
     ) {
     }

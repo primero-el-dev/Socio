@@ -35,9 +35,17 @@ App\Entity\Group:
         id: \d+
     accept_membership:
       security: "is_granted('ACCEPT_MEMBERSHIP_RELATION', [object, userId])"
-      path: /groups/{id}/accept-membership/{userId}
+      path: /groups/{id}/accept-member/{userId}
       method: POST
       controller: App\Controller\Group\AcceptGroupMembershipController
+      requirements:
+        id: \d+
+        userId: \d+
+    remove_membership:
+      security: "is_granted('REMOVE_MEMBERSHIP_RELATION', [object, userId])"
+      path: /groups/{id}/remove-member/{userId}
+      method: POST
+      controller: App\Controller\Group\RemoveGroupMemberController
       requirements:
         id: \d+
         userId: \d+

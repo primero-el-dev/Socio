@@ -6,6 +6,7 @@ use App\Entity\Entity;
 use App\Entity\Group;
 use App\Entity\User;
 use App\Repository\UserSubjectRelationRepository;
+use App\Security\PermissionManagerFacade;
 use App\Security\Roles;
 use App\Util\EntityUtils;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -22,8 +23,10 @@ class GroupVoter extends Voter
         'request_membership' => 'REQUEST_MEMBERSHIP_GROUP',
     ];
 
-    public function __construct(private UserSubjectRelationRepository $relationRepository)
-    {
+    public function __construct(
+        private UserSubjectRelationRepository $relationRepository,
+        private PermissionManagerFacade $permissionManager
+    ) {
     }
 
     protected function supports(string $attribute, $subject): bool
@@ -51,41 +54,34 @@ class GroupVoter extends Voter
         };
     }
 
-    private function can(string $action, User $user, Entity $subject): bool
-    {
-        $role = Roles::getRoleForTypeAndEntity($action, $subject);
-
-        return ($role) ? $user->hasRole($role) : false;
-    }
-
     private function canRead(User $user, Entity $subject): bool
     {
-        return ($this->can('READ', $user, $subject) || 
+        return ($user->hasRole('READ_GROUP') || 
             EntityUtils::areSame($subject->getAuthor(), $user)) &&
-            !$subject->getAuthor()->isForbidden('READ_GROUP', $user);
+            $this->permissionManager->hasPermissionOnGroup($user, 'READ_GROUP', $subject);
     }
 
     private function canCreate(User $user): bool
     {
-        return $this->can('CREATE', $user, $subject);
+        return $user->hasRole('CREATE_GROUP');
     }
 
     private function canUpdate(User $user, Entity $subject): bool
     {
-        return $this->can('UPDATE', $user, $subject) || 
+        return $user->hasRole('UPDATE_GROUP') || 
             EntityUtils::areSame($subject->getAuthor(), $user);
     }
 
     private function canDelete(User $user, Entity $subject): bool
     {
-        return $this->can('REQUEST_MEMBERSHIP', $user, $subject) || 
+        return $user->hasRole('REQUEST_MEMBERSHIP') || 
             EntityUtils::areSame($subject->getAuthor(), $user);
     }
 
     private function canRequestMembership(User $user, Entity $subject): bool
     {
         return $user->hasRole('ROLE_VERIFIED') &&
-            !$this->relationRepository->userCanOn($user, 'ROLE_USER', $subject, false) && 
-            !$this->relationRepository->userCanOn($user, 'ROLE_ADMIN', $subject, false);
+            !$this->relationRepository->userHasRelationWith($user, 'ROLE_USER', $subject, false) && 
+            !$this->relationRepository->userHasRelationWith($user, 'ROLE_ADMIN', $subject, false);
     }
 }

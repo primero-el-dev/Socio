@@ -22,16 +22,30 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteable;
 use Gedmo\Timestampable\Traits\Timestampable;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUserInterface;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /** 
  * @ORM\Entity(repositoryClass=UserRepository::class)
- * @ORM\Table(name="app_user")
+ * @ORM\Table(
+ *      name="app_user",
+ *      uniqueConstraints={
+ *          @ORM\UniqueConstraint(
+ *              name="email_unique", 
+ *              columns={"email"},
+ *              options={"where": "(deleted_at IS NULL)"}
+ *          ),
+ *          @ORM\UniqueConstraint(
+ *              name="email_unique", 
+ *              columns={"slug"},
+ *              options={"where": "(deleted_at IS NULL)"}
+ *          )
+ *      }
+ * )
  * @ORM\HasLifecycleCallbacks()
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
@@ -46,6 +60,7 @@ class User implements Entity, HasConfiguration, UserInterface, PasswordAuthentic
     use SoftDelete;
     use Configuration;
 
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -54,21 +69,21 @@ class User implements Entity, HasConfiguration, UserInterface, PasswordAuthentic
     #[ApiProperty(identifier: true)]
     protected ?int $id;
 
+
     /**
      * @ORM\Column(type="string", length=180)
      */
-    #[
-        Groups(['read:user:self', 'read:user:email', 'insert:user']),
-        Assert\NotBlank(message: 'entity.user.email.notBlank.message'),
-        Assert\Length(
-            min: 5,
-            max: 255,
-            minMessage: 'entity.user.email.length.minMessage',
-            maxMessage: 'entity.user.email.length.maxMessage'
-        ),
-        Assert\Email(message: 'entity.user.email.email.message')
-    ]
+    #[Groups(['read:user:self', 'read:user:email', 'insert:user'])]
+    #[Assert\NotBlank(message: 'entity.user.email.notBlank.message')]
+    #[Assert\Length(
+        min: 5,
+        max: 255,
+        minMessage: 'entity.user.email.length.minMessage',
+        maxMessage: 'entity.user.email.length.maxMessage'
+    )]
+    #[Assert\Email(message: 'entity.user.email.email.message')]
     protected ?string $email;
+
 
     /**
      * @ORM\Column(type="json")
@@ -76,54 +91,75 @@ class User implements Entity, HasConfiguration, UserInterface, PasswordAuthentic
     #[Groups(['read:user:self'])]
     protected array $roles = [];
 
+
     /**
      * @ORM\Column(type="string")
      */
     #[Groups(['write:user', 'admin:read'])]
     protected ?string $password;
 
+
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     #[Groups(['read:user:self', 'read:user:name', 'insert:user'])]
+    #[Assert\Regex(
+        pattern: '/^\w+$/',
+        message: 'entity.user.name.regex.message'
+    )]
+    #[Assert\Length(max: 60, maxMessage: 'entity.user.name.length.maxMessage')]
     protected ?string $name;
+
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     #[Groups(['read:user:self', 'read:user:surname', 'insert:user'])]
+    #[Assert\Regex(
+        pattern: '/^\w+$/',
+        message: 'entity.user.surname.regex.message'
+    )]
+    #[Assert\Length(max: 60, maxMessage: 'entity.user.surname.length.maxMessage')]
     protected ?string $surname;
+
 
     /**
      * @ORM\Column(type="date_immutable")
      */
-    #[
-        Groups(['read:user', 'read:user:birth', 'insert:user']),
-        Assert\NotNull(message: 'entity.user.birth.notNull.message'),
-        Assert\Date(message: 'entity.user.birth.date.message')
-    ]
+    #[Groups(['read:user', 'read:user:birth', 'insert:user'])]
+    #[Assert\NotNull(message: 'entity.user.birth.notNull.message')]
+    #[Assert\Date(message: 'entity.user.birth.date.message')]
     protected ?\DateTimeInterface $birth;
+
 
     /**
      * @ORM\OneToMany(targetEntity=Post::class, mappedBy="author")
      */
     protected Collection $posts;
 
+
     /**
      * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="author")
      */
     protected Collection $comments;
 
+
     /**
      * @ORM\Column(type="string", length=20, nullable=true)
      */
     #[Groups('read:user:self', 'read:user:phone', 'write:user')]
+    #[Assert\Regex(
+        pattern: '/^\+?\d{7,20}$/',
+        message: 'entity.user.phone.regex.message'
+    )]
     protected ?string $phone;
+
 
     /**
      * @ORM\OneToMany(targetEntity=Reaction::class, mappedBy="author")
      */
     protected Collection $reactions;
+
 
     /**
      * @ORM\Column(type="boolean", options={"default":false})
@@ -131,15 +167,18 @@ class User implements Entity, HasConfiguration, UserInterface, PasswordAuthentic
     #[Groups(['read:user:self'])]
     protected bool $verified = false;
 
+
     /**
      * @ORM\OneToOne(targetEntity=Timeline::class, mappedBy="user")
      */
     protected ?Timeline $timeline;
 
+
     /**
      * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="recipient")
      */
     protected Collection $notifications;
+
 
     /**
      * @ORM\Column(type="boolean", options={"default":false})
@@ -147,15 +186,18 @@ class User implements Entity, HasConfiguration, UserInterface, PasswordAuthentic
     #[Groups(['read:user:self'])]
     protected bool $phoneVerified = false;
 
+
     /**
      * @ORM\Column(type="json", options={"default":"[]"})
      */
     #[Groups(['read:user:self'])]
     protected array $configuration = [];
 
+
     #[ApiProperty(iri: 'http://schema.org/contentUrl')]
     #[Groups(['book:read'])]
     public ?string $contentUrl = null;
+
 
     /**
      * @Vich\UploadableField(mapping="media_object", fileNameProperty="filePath")
@@ -163,10 +205,29 @@ class User implements Entity, HasConfiguration, UserInterface, PasswordAuthentic
     #[Groups(['book:write'])]
     public ?File $file = null;
 
+
     /**
      * @ORM\Column(nullable=true)
      */
     public ?string $filePath = null;
+
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    #[Groups(['insert:user', 'read:user'])]
+    #[Assert\Regex(
+        pattern: '/^\w+$/',
+        message: 'entity.user.slug.regex.message'
+    )]
+    #[Assert\Length(
+        min: 5,
+        max: 60,
+        minMessage: 'entity.user.slug.length.minMessage',
+        maxMessage: 'entity.user.slug.length.maxMessage'
+    )]
+    private ?string $slug;
+
 
     public function __construct()
     {
@@ -503,6 +564,18 @@ class User implements Entity, HasConfiguration, UserInterface, PasswordAuthentic
     public function setPhoneVerified(bool $phoneVerified): self
     {
         $this->phoneVerified = $phoneVerified;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }

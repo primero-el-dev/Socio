@@ -20,10 +20,15 @@ class UserSubjectRelation implements Entity
     public const ROLE_ADMIN = 'ROLE_ADMIN';
     public const ROLE_MEMBER = 'ROLE_MEMBER';
     public const REQUEST_MEMBERSHIP = 'REQUEST_MEMBERSHIP';
+    public const LIST_COMMENT = 'LIST_COMMENT';
     public const READ_COMMENT = 'READ_COMMENT';
     public const CREATE_COMMENT = 'CREATE_COMMENT';
+    public const UPDATE_COMMENT = 'UPDATE_COMMENT';
+    public const DELETE_COMMENT = 'DELETE_COMMENT';
     public const REACT_COMMENT = 'REACT_COMMENT';
     public const REPORT_COMMENT = 'REPORT_COMMENT';
+    public const APPROVE_COMMENT = 'APPROVE_COMMENT';
+    public const BAN_COMMENT = 'BAN_COMMENT';
 
     /**
      * @ORM\Id

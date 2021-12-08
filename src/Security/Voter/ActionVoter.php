@@ -6,6 +6,7 @@ use App\Entity\Entity;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Repository\UserSubjectRelationRepository;
+use App\Util\EntityUtils;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -14,6 +15,7 @@ class ActionVoter extends Voter
 {
     private const ROLES = [
         'accept_member' => 'ACCEPT_MEMBERSHIP_RELATION',
+        'remove_member' => 'REMOVE_MEMBERSHIP_RELATION',
     ];
 
     public function __construct(
@@ -42,6 +44,7 @@ class ActionVoter extends Voter
 
         return match ($attribute) {
             self::ROLES['accept_member'] => $this->canAcceptMember($loggedUser, $object, $user),
+            self::ROLES['remove_member'] => $this->canRemoveMember($loggedUser, $object, $user),
             default => false
         };
     }
@@ -78,6 +81,36 @@ class ActionVoter extends Voter
                 'ROLE_MEMBER',
                 $object,
                 false
+            );
+    }
+
+    private function canRemoveMember(
+        User $loggedUser, 
+        Entity $object, 
+        User $user
+    ): bool
+    {
+        return $this->relationRepository->userHasRelationWith(
+                $user, 
+                'ROLE_MEMBER', 
+                $object,
+                false
+            ) &&
+            (
+                EntityUtils::areSame($loggedUser, $user) ||
+                $loggedUser->hasRole('ROLE_ADMIN') ||
+                $this->relationRepository->userHasRelationWith(
+                    $loggedUser,
+                    'ROLE_ADMIN',
+                    $object,
+                    false
+                ) ||
+                $this->relationRepository->userHasRelationWith(
+                    $loggedUser,
+                    'REMOVE_MEMBERSHIP',
+                    $object,
+                    false
+                )
             );
     }
 }

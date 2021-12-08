@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Entity\Entity;
 use App\Entity\Interface\HasComments;
+use App\Entity\Interface\HasConfiguration;
+use App\Entity\Trait\Configuration;
 use App\Entity\Trait\Create;
 use App\Entity\Trait\SoftDelete;
 use App\Entity\Trait\Update;
@@ -13,18 +15,29 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=GroupRepository::class)
- * @ORM\Table(name="`group`")
+ * @ORM\Table(
+ *      name="`group`",
+ *      uniqueConstraints={
+ *          @ORM\UniqueConstraint(
+ *              name="slug_unique", 
+ *              columns={"slug"},
+ *              options={"where": "(deleted_at IS NULL)"}
+ *          )
+ *      }
+ * )
  * @ORM\HasLifecycleCallbacks()
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
-class Group implements Entity, HasComments
+class Group implements Entity, HasComments, HasConfiguration
 {
     use Create;
     use Update;
     use SoftDelete;
+    use Configuration;
 
     /**
      * @ORM\Id
@@ -37,24 +50,45 @@ class Group implements Entity, HasComments
      * @ORM\Column(type="string", length=255)
      */
     #[Groups(['write:group', 'read:group'])]
+    #[Assert\Length(
+        min: 10,
+        max: 255,
+        minMessage: 'entity.group.name.length.minMessage'
+        maxMessage: 'entity.group.name.length.maxMessage'
+    )]
     private ?string $name;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
     #[Groups(['insert:group', 'read:group'])]
+    #[Assert\Length(
+        min: 5,
+        max: 255,
+        minMessage: 'entity.group.slug.length.minMessage',
+        maxMessage: 'entity.group.slug.length.maxMessage'
+    )]
     private ?string $slug;
 
     /**
      * @ORM\Column(type="text")
      */
     #[Groups(['write:group', 'read:group'])]
+    #[Assert\Length(
+        max: 2048,
+        maxMessage: 'entity.group.description.length.maxMessage'
+    )]
     private ?string $description;
 
     /**
-     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="_group")
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="group")
      */
     private Collection $comments;
+
+    /**
+     * @ORM\Column(type="json", options={"default":"[]"})
+     */
+    private array $configuration = [];
 
     public function __construct()
     {
@@ -88,7 +122,7 @@ class Group implements Entity, HasComments
     {
         $this->slug = $slug;
 
-        return $this;
+       return $this;
     }
 
     public function getDescription(): ?string

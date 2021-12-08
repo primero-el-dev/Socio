@@ -22,26 +22,32 @@ class PermissionManagerFacade
 	public function grantOnGroupJoin(User $user, Group $group): void
 	{
 		$groupIri = $this->iriConverter->getIriFromItem($group);
-		
-		$this->removeRelation($user, 'REQUEST_MEMBERSHIP', $groupIri);
-		$this->createRelation($user, 'ROLE_MEMBER', $groupIri);
-		$this->createRelation($user, 'READ_COMMENT', $groupIri);
-		$this->createRelation($user, 'CREATE_COMMENT', $groupIri);
-		$this->createRelation($user, 'REACT_COMMENT', $groupIri);
-		$this->createRelation($user, 'REPORT_COMMENT', $groupIri);
-
+		$this->removeRelation($user, UserSubjectRelation::REQUEST_MEMBERSHIP, $groupIri);
+		$this->createRelation($user, UserSubjectRelation::ROLE_MEMBER, $groupIri);
+		$this->createRelation($user, UserSubjectRelation::READ_COMMENT, $groupIri);
+		$this->createRelation($user, UserSubjectRelation::CREATE_COMMENT, $groupIri);
+		$this->createRelation($user, UserSubjectRelation::REACT_COMMENT, $groupIri);
+		$this->createRelation($user, UserSubjectRelation::REPORT_COMMENT, $groupIri);
 		$this->entityManager->flush();
 	}
 
-	public function removeGrantsOnExitGroup(User $user, Group $group): void
+	public function removeGrantsOnGroupQuit(User $user, Group $group): void
 	{
 		$groupIri = $this->iriConverter->getIriFromItem($group);
+		$this->removeRelation($user, UserSubjectRelation::ROLE_MEMBER, $groupIri);
+		$this->removeRelation($user, UserSubjectRelation::READ_COMMENT, $groupIri);
+		$this->removeRelation($user, UserSubjectRelation::CREATE_COMMENT, $groupIri);
+		$this->removeRelation($user, UserSubjectRelation::REACT_COMMENT, $groupIri);
+		$this->removeRelation($user, UserSubjectRelation::REPORT_COMMENT, $groupIri);
+	}
+
+	public function hasPermissionOnGroup(
+		User $user, 
+		string $permission, 
+		Group $group
+	): bool
+	{
 		
-		$this->removeRelation($user, 'ROLE_MEMBER', $groupIri);
-		$this->removeRelation($user, 'READ_COMMENT', $groupIri);
-		$this->removeRelation($user, 'CREATE_COMMENT', $groupIri);
-		$this->removeRelation($user, 'REACT_COMMENT', $groupIri);
-		$this->removeRelation($user, 'REPORT_COMMENT', $groupIri);
 	}
 
 	private function createRelation(

@@ -1,0 +1,69 @@
+entity:
+  comment:
+    content:
+      notBlank:
+        message: 'Comment message is required.'
+      length:
+        maxMessage: 'Comment is too long.'
+  user:
+    email:
+      notBlank:
+        message: 'Email address is required.'
+      email:
+        message: 'Email address has invalid format.'
+      length:
+        minMessage: 'Email address must be {{ limit }} characters minimum.'
+        maxMessage: 'Email address must be {{ limit }} characters maximum.'
+      uniqueIgnoreDeleted:
+        message: 'Email already exists in our database.'
+    name:
+      regex:
+        message: 'Name may contain only letters.'
+      length:
+        maxMessage: 'Name must be {{ limit }} characters maximum.'
+    surname:
+      regex:
+        message: 'Surname may contain only letters and dashes.'
+      length:
+        maxMessage: 'Surname must be {{ limit }} characters maximum.'
+    phone:
+      regex:
+        message: 'Phone number has inproper format.'
+      uniqueIgnoreDeleted:
+        message: 'Phone already exists in our database.'
+    password:
+      label: 'Password'
+      notBlank:
+        message: 'Password is required'
+      length:
+        minMessage: 'Password must be {{ limit }} characters minimum.'
+        maxMessage: 'Password must be {{ limit }} characters maximum.'
+      notMatch:
+        message: 'Both passwords must be the same.'
+    repeatPassword:
+      label: 'Repeat password'
+    birth:
+      notNull:
+        message: 'Birth date is required.'
+      date:
+        message: 'Birth date must be a proper date.'
+    slug:
+      regex:
+        message: 'Slug may contain only letters and dashes.'
+      length:
+        minMessage: 'Slug must be {{ limit }} characters minimum.'
+        maxMessage: 'Slug must be {{ limit }} characters maximum.'
+      uniqueIgnoreDeleted:
+        message: 'Slug already exists in our database.'
+  group:
+    name:
+      length:
+        minMessage: 'Group name must be at least {{ limit }} characters long.'
+        maxMessage: 'Group name must be at most {{ limit }} characters long.'
+    slug:
+      length:
+        minMessage: 'Group slug must be at least {{ limit }} characters long.'
+        maxMessage: 'Group slug must be at most {{ limit }} characters long.'
+    slug:
+      length:
+        maxMessage: 'Group description is too long.'

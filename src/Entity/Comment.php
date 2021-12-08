@@ -49,16 +49,14 @@ class Comment implements Entity, HasComments, UserOwned
     /**
      * @ORM\Column(type="text")
      */
-    #[
-        Groups(['write:comment', 'read:comment']),
-        Assert\NotNull(message: 'entity.comment.content.notNull.message'),
-        Assert\Length(
-            min: 1,
-            max: 2000,
-            minMessage: 'entity.comment.content.notNull.message',
-            maxMessage: 'entity.comment.content.length.maxMessage'
-        )
-    ]
+    #[Groups(['write:comment', 'read:comment'])]
+    #[Assert\NotNull(message: 'entity.comment.content.notNull.message')]
+    #[Assert\Length(
+        min: 1,
+        max: 2000,
+        minMessage: 'entity.comment.content.notNull.message',
+        maxMessage: 'entity.comment.content.length.maxMessage'
+    )]
     private ?string $content;
 
     /**
