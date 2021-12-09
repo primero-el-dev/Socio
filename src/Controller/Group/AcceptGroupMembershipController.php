@@ -7,8 +7,7 @@ use App\Entity\Group;
 use App\Entity\User;
 use App\Entity\UserSubjectRelation;
 use App\Event\User\AcceptGroupMembershipEvent;
-use App\Repository\UserRepository;
-use App\Repository\UserSubjectRelationRepository;
+use App\Repository\Interface\UserRepositoryInterface;
 use App\Security\PermissionManagerFacade;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -23,7 +22,7 @@ class AcceptGroupMembershipController extends AbstractController
 {
     public function __construct(
         private TranslatorInterface $translator,
-        private UserRepository $userRepository,
+        private UserRepositoryInterface $userRepository,
         private PermissionManagerFacade $permissionManager
     ) {
     }

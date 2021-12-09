@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Dictionary;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Repository\Interface\DictionaryRepositoryInterface;
 
 /**
  * @method Dictionary|null find($id, $lockMode = null, $lockVersion = null)
@@ -12,7 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Dictionary[]    findAll()
  * @method Dictionary[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class DictionaryRepository extends ServiceEntityRepository
+class DictionaryRepository extends ServiceEntityRepository implements DictionaryRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {

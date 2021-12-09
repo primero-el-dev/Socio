@@ -4,9 +4,9 @@ namespace App\Message\Handler\Comment;
 
 use App\Message\Comment\NotifyOwnerThatCommentWasApprovedCommand;
 use App\Message\Handler\CommandHandler;
-use App\Repository\CommentRepository;
-use App\Repository\UserRepository;
-use App\Repository\UserSubjectRelationRepository;
+use App\Repository\Interface\CommentRepositoryInterface;
+use App\Repository\Interface\UserRepositoryInterface;
+use App\Repository\Interface\UserSubjectRelationRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use ApiPlatform\Core\Api\IriConverterInterface;
@@ -18,9 +18,9 @@ use Symfony\Component\Notifier\Recipient\Recipient;
 class NotifyOwnerThatCommentWasApprovedCommandHandler implements CommandHandler
 {
 	public function __construct(
-		private UserRepository $userRepository,
-		private CommentRepository $commentRepository,
-		private UserSubjectRelationRepository $relationRepository,
+		private UserRepositoryInterface $userRepository,
+		private CommentRepositoryInterface $commentRepository,
+		private UserSubjectRelationRepositoryInterface $relationRepository,
 		private TranslatorInterface $translator,
 		private EntityManagerInterface $entityManager,
 		private IriConverterInterface $iriConverter

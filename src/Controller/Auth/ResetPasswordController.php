@@ -5,7 +5,7 @@ namespace App\Controller\Auth;
 use App\Controller\Trait\JsonRequestResponder;
 use App\DataValidator\RepeatedPasswordDataValidator;
 use App\Form\ResetPasswordType;
-use App\Repository\UserRepository;
+use App\Repository\Interface\UserRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -26,7 +26,7 @@ class ResetPasswordController extends AbstractController
         private UserPasswordHasherInterface $passwordHasher,
         private TranslatorInterface $translator,
         private FormFactoryInterface $formFactory,
-        private UserRepository $userRepository,
+        private UserRepositoryInterface $userRepository,
         private RepeatedPasswordDataValidator $dataValidator
     ) {
     }

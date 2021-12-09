@@ -2,12 +2,12 @@
 
 namespace App\Security;
 
+use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Entity\Entity;
 use App\Entity\Group;
 use App\Entity\User;
 use App\Entity\UserUserRelation;
-use App\Repository\UserSubjectRelationRepository;
-use ApiPlatform\Core\Api\IriConverterInterface;
+use App\Repository\Interface\UserSubjectRelationRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PermissionManagerFacade
@@ -15,7 +15,7 @@ class PermissionManagerFacade
 	public function __construct(
 		private EntityManagerInterface $entityManager,
 		private IriConverterInterface $iriConverter,
-		private UserSubjectRelationRepository $relationRepository
+		private UserSubjectRelationRepositoryInterface $relationRepository
 	) {
 	}
 

@@ -4,7 +4,7 @@ namespace App\Controller\Auth;
 
 use App\Entity\Token;
 use App\Entity\User;
-use App\Repository\TokenRepository;
+use App\Repository\Interface\TokenRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,7 +16,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class EmailVerificationController extends AbstractController
 {
     public function __construct(
-        private TokenRepository $tokenRepository,
+        private TokenRepositoryInterface $tokenRepository,
         private EntityManagerInterface $entityManager,
         private TranslatorInterface $translator
     ) {

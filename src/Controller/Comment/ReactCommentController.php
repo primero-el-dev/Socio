@@ -4,8 +4,8 @@ namespace App\Controller\Comment;
 
 use App\Entity\Comment;
 use App\Entity\Reaction;
-use App\Repository\ReactionRepository;
-use App\Repository\UserRepository;
+use App\Repository\Interface\ReactionRepositoryInterface;
+use App\Repository\Interface\UserRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,8 +15,8 @@ use Symfony\Component\HttpFoundation\Response;
 class ReactCommentController extends AbstractController
 {
     public function __construct(
-        private ReactionRepository $reactionRepository,
-        private UserRepository $userRepository,
+        private ReactionRepositoryInterface $reactionRepository,
+        private UserRepositoryInterface $userRepository,
         private EntityManagerInterface $entityManager
     ) {
     }

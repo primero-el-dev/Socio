@@ -3,7 +3,7 @@
 namespace App\Controller\Group;
 
 use App\Entity\Group;
-use App\Repository\UserRepository;
+use App\Repository\Interface\UserRepositoryInterface;
 use App\Security\PermissionManagerFacade;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 class RemoveGroupMemberController extends AbstractController
 {
     public function __construct(
-        private UserRepository $userRepository,
+        private UserRepositoryInterface $userRepository,
         private PermissionManagerFacade $permissionManager
     ) {
     }

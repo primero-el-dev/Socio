@@ -4,7 +4,7 @@ namespace App\Controller\Auth;
 
 use App\Controller\Trait\JsonRequestResponder;
 use App\Event\User\ResetPasswordRequestEvent;
-use App\Repository\UserRepository;
+use App\Repository\Interface\UserRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,7 +18,7 @@ class ForgotPasswordController extends AbstractController
 
     public function __construct(
         private TranslatorInterface $translator,
-        private UserRepository $userRepository,
+        private UserRepositoryInterface $userRepository,
         private MessageBusInterface $eventBus
     ) {
     }

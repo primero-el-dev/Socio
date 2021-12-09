@@ -5,7 +5,7 @@ namespace App\Validator;
 use App\Validator\UniqueIgnoreDeleted;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use Doctrine\OEntityManagerInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
 class UniqueIgnoreDeletedValidator extends ConstraintValidator
 {

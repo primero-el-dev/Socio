@@ -4,14 +4,14 @@ namespace App\Serializer;
 
 use ApiPlatform\Core\Serializer\SerializerContextBuilderInterface;
 use App\Entity\User;
-use App\Repository\UserRepository;
+use App\Repository\Interface\UserRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 final class UserGroupsContextBuilder implements SerializerContextBuilderInterface
 {
     public function __construct(
     	private SerializerContextBuilderInterface $decorated,
-    	private UserRepository $userRepository
+    	private UserRepositoryInterface $userRepository
     ) {
     }
 

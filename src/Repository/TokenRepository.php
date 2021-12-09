@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Token;
 use App\Entity\User;
+use App\Repository\Interface\TokenRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -13,7 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Token[]    findAll()
  * @method Token[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class TokenRepository extends ServiceEntityRepository
+class TokenRepository extends ServiceEntityRepository implements TokenRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {

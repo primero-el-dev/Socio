@@ -5,7 +5,7 @@ namespace App\Controller\Comment;
 use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Controller\Trait\JsonRequestResponder;
 use App\Http\Request\JsonExtractor;
-use App\Repository\UserSubjectRelationRepository;
+use App\Repository\Interface\UserSubjectRelationRepositoryInterface;
 use App\Util\EntityUtils;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +17,7 @@ class CreateCommentController extends AbstractController
     public function __construct(
         private JsonExtractor $jsonExtractor,
         private IriConverterInterface $iriConverter,
-        private UserSubjectRelationRepository $relationRepository,
+        private UserSubjectRelationRepositoryInterface $relationRepository,
         private EntityManagerInterface $entityManager
     ) {
     }

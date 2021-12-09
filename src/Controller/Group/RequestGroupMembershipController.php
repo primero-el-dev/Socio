@@ -7,8 +7,8 @@ use App\Entity\Group;
 use App\Entity\User;
 use App\Entity\UserSubjectRelation;
 use App\Event\User\RequestGroupMembershipEvent;
-use App\Repository\UserRepository;
-use App\Repository\UserSubjectRelationRepository;
+use App\Repository\Interface\UserRepositoryInterface;
+use App\Repository\Interface\UserSubjectRelationRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,8 +21,8 @@ class RequestGroupMembershipController extends AbstractController
     public function __construct(
         private EntityManagerInterface $entityManager,
         private MessageBusInterface $eventBus,
-        private UserRepository $userRepository,
-        private UserSubjectRelationRepository $relationRepository,
+        private UserRepositoryInterface $userRepository,
+        private UserSubjectRelationRepositoryInterface $relationRepository,
         private TranslatorInterface $translator,
         private IriConverterInterface $iriConverter
     ) {

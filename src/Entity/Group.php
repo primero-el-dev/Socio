@@ -53,7 +53,7 @@ class Group implements Entity, HasComments, HasConfiguration
     #[Assert\Length(
         min: 10,
         max: 255,
-        minMessage: 'entity.group.name.length.minMessage'
+        minMessage: 'entity.group.name.length.minMessage',
         maxMessage: 'entity.group.name.length.maxMessage'
     )]
     private ?string $name;

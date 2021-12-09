@@ -8,7 +8,7 @@ use App\Entity\Entity;
 use App\Entity\Timeline;
 use App\Entity\User;
 use App\Http\Request\JsonExtractor;
-use App\Repository\UserSubjectRelationRepository;
+use App\Repository\Interface\UserSubjectRelationRepositoryInterface;
 use App\Security\Roles;
 use App\Util\EntityUtils;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -31,7 +31,7 @@ class CommentVoter extends Voter
     ];
 
     public function __construct(
-        private UserSubjectRelationRepository $relationRepository,
+        private UserSubjectRelationRepositoryInterface $relationRepository,
         private RequestStack $requestStack,
         private JsonExtractor $jsonExtractor,
         private IriConverterInterface $iriConverter
@@ -75,7 +75,7 @@ class CommentVoter extends Voter
             return true;
         }
 
-        return $this->userCan($user, 'READ', 'Comment') || 
+        return $user->hasRole('READ_COMMENT') || 
             $this->relationRepository->userCanOnSubjectIri(
                 $user, 
                 'READ_COMMENT', 
@@ -83,15 +83,10 @@ class CommentVoter extends Voter
             );
     }
 
-    private function userCan(User $user, string $action): bool
-    {
-        return $user->hasRole(Roles::getRoleForTypeAndClass($action, 'Comment'));
-    }
-
     private function canRead(User $user, Comment $subject): bool
     {
-        return ($this->userCan($user, 'READ', 'Comment') || 
-            $this->userCanOnComment($user, 'READ', $subject));
+        return ($user->hasRole('READ_COMMENT') || 
+            $this->userCanOnComment($user, 'READ_COMMENT', $subject));
     }
 
     private function commentActionReferencingEntityIsNotDeniedForUser(
@@ -107,7 +102,7 @@ class CommentVoter extends Voter
 
         return $this->relationRepository->userCanOnSubjectIri(
             $user, 
-            $action . '_COMMENT', 
+            $action, 
             $this->iriConverter->getIriFromItem($entity)
         );
     }
@@ -119,15 +114,15 @@ class CommentVoter extends Voter
     ): bool
     {
         return $this->commentActionReferencingEntityIsNotDeniedForUser(
-            $comment, 'READ', $method, $user);
+            $comment, 'READ_COMMENT', $method, $user);
     }
 
     private function canCreate(User $user): bool
     {
         $data = $this->getRequestData();
 
-        return $this->userCan($user, 'CREATE', 'Comment') ||
-            $this->userCanOnData($user, 'CREATE', $data);
+        return $user->hasRole('CREATE_COMMENT') ||
+            $this->userCanOnData($user, 'CREATE_COMMENT', $data);
     }
 
     public function isUsersTimelineIriIfExists(User $user, ?string $timelineIri): bool
@@ -164,46 +159,46 @@ class CommentVoter extends Voter
 
     private function canUpdate(User $user, Entity $subject): bool
     {
-        return $this->userCan($user, 'UPDATE', 'Comment') || 
+        return $user->hasRole('UPDATE_COMMENT') || 
             EntityUtils::areSame($subject->getAuthor(), $user);
     }
 
     private function canDelete(User $user, Entity $subject): bool
     {
-        return $this->userCan($user, 'DELETE', 'Comment') || 
+        return $user->hasRole('DELETE_COMMENT') || 
             EntityUtils::areSame($subject->getAuthor(), $user);
     }
 
     private function canReact(User $user, Entity $subject): bool
     {
-        return $this->userCan($user, 'REACT', 'Comment') || 
-            $this->userCanOnComment($user, 'REACT', $subject);
+        return $user->hasRole('REACT_COMMENT') || 
+            $this->userCanOnComment($user, 'REACT_COMMENT', $subject);
     }
 
     private function canReport(User $user, Entity $subject): bool
     {
-        return $this->userCan($user, 'REPORT', 'Comment') || 
-            $this->userCanOnComment($user, 'REPORT', $subject) ||
+        return $user->hasRole('REPORT_COMMENT') || 
+            $user->hasRole('ROLE_ADMIN') ||
+            $this->userCanOnComment($user, 'REPORT_COMMENT', $subject) ||
             $this->userCanOn($user, 'REPORT_COMMENT', $subject->getGroup()) ||
             $this->userCanOn($user, 'ROLE_ADMIN', $subject->getGroup()) ||
-            $user->hasRole('ROLE_ADMIN') ||
             $this->userCanOn($user, 'REPORT_COMMENT', $subject->getTimeline());
     }
 
     private function canApprove(User $user, Entity $subject): bool
     {
-        return $this->userCan($user, 'APPROVE', 'Comment') || 
+        return $user->hasRole('APPROVE_COMMENT') || 
+            $user->hasRole('ROLE_ADMIN') ||
             $this->userCanOn($user, 'APPROVE_COMMENT', $subject->getGroup()) ||
-            $this->userCanOn($user, 'ROLE_ADMIN', $subject->getGroup()) ||
-            $user->hasRole('ROLE_ADMIN');
+            $this->userCanOn($user, 'ROLE_ADMIN', $subject->getGroup());
     }
 
     private function canBan(User $user, Entity $subject): bool
     {
-        return $this->userCan($user, 'BAN', 'Comment') || 
+        return $user->hasRole('BAN_COMMENT') || 
+            $user->hasRole('ROLE_ADMIN') ||
             $this->userCanOn($user, 'BAN_COMMENT', $subject->getGroup()) ||
-            $this->userCanOn($user, 'ROLE_ADMIN', $subject->getGroup()) ||
-            $user->hasRole('ROLE_ADMIN');
+            $this->userCanOn($user, 'ROLE_ADMIN', $subject->getGroup());
     }
 
     private function userCanOnComment(
@@ -271,13 +266,18 @@ class CommentVoter extends Voter
             return true;
         }
 
-        foreach (['group', 'timeline'] as $key) {
-            $result = $result || (($data[$key] && is_string($data[$key])) 
-                    ? $this->userCanOnIri($user, $action, $data[$key])
-                    : true);
+        if (!empty($data['group']) && !empty($data['timeline'])) {
+            return false;
         }
 
-        return $result;
+        foreach (['group', 'timeline'] as $key) {
+            if ($data[$key] && is_string($data[$key]) && 
+                !$this->userCanOnIri($user, $action, $data[$key])) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function userCanOnCommentInTimelineIri(
@@ -292,7 +292,7 @@ class CommentVoter extends Voter
             return true;
         }
 
-        return $thius->userCanOnIri($user, $action, $timelineIri);
+        return $this->userCanOnIri($user, $action, $timelineIri);
     }
 
     private function userCanOn(User $user, string $action, ?Entity $entity): bool
@@ -312,7 +312,7 @@ class CommentVoter extends Voter
     {
         return $this->relationRepository->userCanOnSubjectIri(
             $user, 
-            $action . '_COMMENT', 
+            $action, 
             $iri,
             false
         );

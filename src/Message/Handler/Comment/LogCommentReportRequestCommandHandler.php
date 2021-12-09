@@ -2,22 +2,22 @@
 
 namespace App\Message\Handler\Comment;
 
+use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Entity\UserSubjectRelation;
 use App\Message\Comment\LogCommentReportRequestCommand;
 use App\Message\Handler\CommandHandler;
-use App\Repository\CommentRepository;
-use App\Repository\UserRepository;
-use App\Repository\UserSubjectRelationRepository;
+use App\Repository\Interface\CommentRepositoryInterface;
+use App\Repository\Interface\UserRepositoryInterface;
+use App\Repository\Interface\UserSubjectRelationRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use ApiPlatform\Core\Api\IriConverterInterface;
 
 class LogCommentReportRequestCommandHandler implements CommandHandler
 {
 	public function __construct(
-		private UserRepository $userRepository,
-		private CommentRepository $commentRepository,
-		private UserSubjectRelationRepository $relationRepository,
+		private UserRepositoryInterface $userRepository,
+		private CommentRepositoryInterface $commentRepository,
+		private UserSubjectRelationRepositoryInterface $relationRepository,
 		private TranslatorInterface $translator,
 		private EntityManagerInterface $entityManager,
 		private IriConverterInterface $iriConverter

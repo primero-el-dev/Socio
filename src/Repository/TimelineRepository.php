@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Timeline;
+use App\Repository\Interface\TimelineRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -12,7 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Timeline[]    findAll()
  * @method Timeline[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class TimelineRepository extends ServiceEntityRepository
+class TimelineRepository extends ServiceEntityRepository implements TimelineRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {

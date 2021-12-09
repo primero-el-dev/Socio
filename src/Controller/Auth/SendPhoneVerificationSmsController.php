@@ -7,7 +7,7 @@ use App\Entity\Token;
 use App\Entity\User;
 use App\Http\Request\JsonExtractor;
 use App\Message\User\SendSmsCommand;
-use App\Repository\UserRepository;
+use App\Repository\Interface\UserRepositoryInterface;
 use App\Util\StringUtil;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,7 +20,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class SendPhoneVerificationSmsController extends AbstractController
 {
     public function __construct(
-        private UserRepository $userRepository,
+        private UserRepositoryInterface $userRepository,
         private TranslatorInterface $translator,
         private EntityManagerInterface $entityManager,
         private MessageBusInterface $commandBus,

@@ -3,7 +3,7 @@
 namespace App\Security;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
+use App\Repository\Interface\UserRepositoryInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class ApiUserProvider implements UserProviderInterface, PasswordUpgraderInterface
 {
-    public function __construct(private UserRepository $userRepository)
+    public function __construct(private UserRepositoryInterface $userRepository)
     {
     }
 

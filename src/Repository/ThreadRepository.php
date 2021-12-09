@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Thread;
+use App\Repository\Interface\ThreadRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -12,7 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Thread[]    findAll()
  * @method Thread[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ThreadRepository extends ServiceEntityRepository
+class ThreadRepository extends ServiceEntityRepository implements ThreadRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {

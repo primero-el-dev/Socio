@@ -3,12 +3,13 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Repository\Interface\UserRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
-use Doctrine\ORM\Query\ResultSetMapping;
 
 /**
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
@@ -16,7 +17,7 @@ use Doctrine\ORM\Query\ResultSetMapping;
  * @method User[]    findAll()
  * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
+class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface, UserRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -42,7 +43,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $this->findByRole('ROLE_ADMIN');
     }
 
-    public function findByRole(string $role): ?array
+    public function findByRole(string $role): array
     {
         return array_filter($this->findAll(), fn($u) => $u->hasRole($role));
     }

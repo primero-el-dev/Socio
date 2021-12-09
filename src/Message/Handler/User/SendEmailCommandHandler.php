@@ -4,7 +4,7 @@ namespace App\Message\Handler\User;
 
 use App\Message\Handler\CommandHandler;
 use App\Message\User\SendSmsCommand;
-use App\Repository\UserRepository;
+use App\Repository\Interface\UserRepositoryInterface;
 use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Notifier\Recipient\Recipient;
@@ -12,7 +12,7 @@ use Symfony\Component\Notifier\Recipient\Recipient;
 class SendEmailCommandHandler implements CommandHandler
 {
 	public function __construct(
-		private UserRepository $userRepository,
+		private UserRepositoryInterface $userRepository,
 		private NotifierInterface $notifier
 	) {
 	}

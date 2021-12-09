@@ -4,7 +4,6 @@ namespace App\Controller\Comment;
 
 use App\Entity\Comment;
 use App\Event\Comment\ReportCommentEvent;
-use App\Repository\UserSubjectRelationRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

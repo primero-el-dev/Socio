@@ -8,12 +8,13 @@ use App\Entity\PermissionConfiguration;
 use App\Entity\User;
 use App\Event\User\ChangePasswordEvent;
 use App\Event\User\RegistrationEvent;
-use App\Repository\CommentRepository;
-use App\Repository\PostRepository;
-use App\Repository\ReactionRepository;
-use App\Repository\TimelineRepository;
-use App\Repository\TokenRepository;
-use App\Repository\UserRepository;
+use App\Repository\Interface\CommentRepositoryInterface;
+use App\Repository\Interface\UserRepositoryInterface;
+use App\Repository\Interface\PostRepositoryInterface;
+use App\Repository\Interface\ReactionRepositoryInterface;
+use App\Repository\Interface\TimelineRepositoryInterface;
+use App\Repository\Interface\TokenRepositoryInterface;
+use App\Repository\Interface\UserRepositoryInterface;
 use App\Security\Roles;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -22,21 +23,21 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Notifier\Recipient\Recipient;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class Pong extends AbstractController
 {
 	public function __construct(
 		private EntityManagerInterface $entityManager,
-		private UserRepository $userRepository,
-		private PostRepository $postRepository,
-		private TokenRepository $tokenRepository,
-		private ReactionRepository $reactionRepository,
-		private CommentRepository $commentRepository,
+		// private UserRepository $userRepository,
+		private PostRepositoryInterface $postRepository,
+		private TokenRepositoryInterface $tokenRepository,
+		private ReactionRepositoryInterface $reactionRepository,
+		private CommentRepositoryInterface $commentRepository,
 		private IriConverterInterface $iriConverter,
 		private MessageBusInterface $eventBus,
 		private MailerInterface $mailer,
@@ -44,14 +45,15 @@ class Pong extends AbstractController
 		private ValidatorInterface $validator,
 		private TranslatorInterface $translator,
 		private TimelineRepository $timelineRepository,
-		private NotifierInterface $notifier
+		private NotifierInterface $notifier,
+		private UserRepositoryInterface $userRepository
 	) {
 	}
 
 	public function __invoke(Request $request)
 	{
 		$user = $this->userRepository->find(2);
-		$user->setConfigurationKeys(['a', 'b', 'c'], 'value');
+		// $user->setConfigurationKeys(['a', 'b', 'c'], 'value');
 		dd($user);
 
 		// $notification = (new Notification('New Invoice', ['sms/sinch']))

@@ -5,7 +5,7 @@ namespace App\Security\Voter;
 use App\Entity\Entity;
 use App\Entity\Group;
 use App\Entity\User;
-use App\Repository\UserSubjectRelationRepository;
+use App\Repository\Interface\UserSubjectRelationRepositoryInterface;
 use App\Security\PermissionManagerFacade;
 use App\Security\Roles;
 use App\Util\EntityUtils;
@@ -24,7 +24,7 @@ class GroupVoter extends Voter
     ];
 
     public function __construct(
-        private UserSubjectRelationRepository $relationRepository,
+        private UserSubjectRelationRepositoryInterface $relationRepository,
         private PermissionManagerFacade $permissionManager
     ) {
     }

@@ -4,8 +4,8 @@ namespace App\Security\Voter;
 
 use App\Entity\Entity;
 use App\Entity\User;
-use App\Repository\UserRepository;
-use App\Repository\UserSubjectRelationRepository;
+use App\Repository\Interface\UserRepositoryInterface;
+use App\Repository\Interface\UserSubjectRelationRepositoryInterface;
 use App\Util\EntityUtils;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -19,8 +19,8 @@ class ActionVoter extends Voter
     ];
 
     public function __construct(
-        private UserRepository $userRepository,
-        private UserSubjectRelationRepository $relationRepository
+        private UserRepositoryInterface $userRepository,
+        private UserSubjectRelationRepositoryInterface $relationRepository
     ) {
     }
 
@@ -55,33 +55,15 @@ class ActionVoter extends Voter
         User $user
     ): bool
     {
-        return $this->relationRepository->userHasRelationWith(
-                $user, 
-                'REQUEST_MEMBERSHIP', 
-                $object,
-                false
-            ) &&
+        $hasRelation = $this->hasRelationClosure($object);
+
+        return $hasRelation($user, 'REQUEST_MEMBERSHIP') &&
             (
                 $loggedUser->hasRole('ROLE_ADMIN') ||
-                $this->relationRepository->userHasRelationWith(
-                    $loggedUser,
-                    'ROLE_ADMIN',
-                    $object,
-                    false
-                ) ||
-                $this->relationRepository->userHasRelationWith(
-                    $loggedUser,
-                    'ACCEPT_MEMBERSHIP',
-                    $object,
-                    false
-                )
+                $hasRelation($loggedUser, 'ROLE_ADMIN') ||
+                $hasRelation($loggedUser, 'ACCEPT_MEMBERSHIP')
             ) &&
-            !$this->relationRepository->userHasRelationWith(
-                $user,
-                'ROLE_MEMBER',
-                $object,
-                false
-            );
+            !$hasRelation($user, 'ROLE_MEMBER');
     }
 
     private function canRemoveMember(
@@ -90,27 +72,26 @@ class ActionVoter extends Voter
         User $user
     ): bool
     {
-        return $this->relationRepository->userHasRelationWith(
-                $user, 
-                'ROLE_MEMBER', 
-                $object,
-                false
-            ) &&
+        $hasRelation = $this->hasRelationClosure($object);
+
+        return $hasRelation($user, 'ROLE_MEMBER') &&
             (
                 EntityUtils::areSame($loggedUser, $user) ||
                 $loggedUser->hasRole('ROLE_ADMIN') ||
-                $this->relationRepository->userHasRelationWith(
-                    $loggedUser,
-                    'ROLE_ADMIN',
-                    $object,
-                    false
-                ) ||
-                $this->relationRepository->userHasRelationWith(
-                    $loggedUser,
-                    'REMOVE_MEMBERSHIP',
-                    $object,
-                    false
-                )
+                $hasRelation($loggedUser, 'ROLE_ADMIN') ||
+                $hasRelation($loggedUser, 'REMOVE_MEMBERSHIP')
             );
+    }
+
+    private function hasRelationClosure(Entity $subject): callable
+    {
+        return function (User $user, string $relation) use ($subject): bool {
+            return $this->relationRepository->userHasRelationWith(
+                $user,
+                $relation,
+                $subject,
+                false
+            );
+        };
     }
 }

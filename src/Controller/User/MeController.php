@@ -2,12 +2,12 @@
 
 namespace App\Controller\User;
 
-use App\Repository\UserRepository;
+use App\Repository\Interface\UserRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MeController extends AbstractController
 {
-    public function __construct(private UserRepository $userRepository)
+    public function __construct(private UserRepositoryInterface $userRepository)
     {
     }
 

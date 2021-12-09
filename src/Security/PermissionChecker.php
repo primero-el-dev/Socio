@@ -2,14 +2,14 @@
 
 namespace App\Security;
 
-use App\Repository\UserRepository;
-use App\Repository\UserSubjectRelationRepository;
+use App\Repository\Interface\UserRepositoryInterface;
+use App\Repository\Interface\UserSubjectRelationRepositoryInterface;
 
 class PermissionChecker
 {
 	public function __construct(
-		private UserRepository $userRepository,
-		private UserSubjectRelationRepository $relationRepository
+		private UserRepositoryInterface $userRepository,
+		private UserSubjectRelationRepositoryInterface $relationRepository
 	) {
 	}
 

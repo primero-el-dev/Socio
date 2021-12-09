@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Comment;
 use App\Entity\Reaction;
 use App\Entity\User;
+use App\Repository\Interface\ReactionRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -14,7 +15,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Reaction[]    findAll()
  * @method Reaction[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ReactionRepository extends ServiceEntityRepository
+class ReactionRepository extends ServiceEntityRepository implements ReactionRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {

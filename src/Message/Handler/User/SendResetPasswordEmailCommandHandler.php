@@ -6,8 +6,8 @@ use App\Entity\Token;
 use App\Entity\User;
 use App\Message\Handler\CommandHandler;
 use App\Message\User\SendResetPasswordEmailCommand;
-use App\Repository\TokenRepository;
-use App\Repository\UserRepository;
+use App\Repository\Interface\TokenRepositoryInterface;
+use App\Repository\Interface\UserRepositoryInterface;
 use App\Util\StringUtil;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -18,8 +18,8 @@ use Symfony\Component\Mailer\MailerInterface;
 class SendResetPasswordEmailCommandHandler implements CommandHandler
 {
 	public function __construct(
-		private TokenRepository $tokenRepository,
-		private UserRepository $userRepository,
+		private TokenRepositoryInterface $tokenRepository,
+		private UserRepositoryInterface $userRepository,
 		private TranslatorInterface $translator,
 		private EntityManagerInterface $entityManager,
 		private UrlGeneratorInterface $urlGenerator,

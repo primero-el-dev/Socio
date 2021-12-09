@@ -2,25 +2,25 @@
 
 namespace App\Message\Handler\Comment;
 
+use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Message\Comment\NotifyAdminsAboutCommentReportCommand;
 use App\Message\Handler\CommandHandler;
-use App\Repository\CommentRepository;
-use App\Repository\UserRepository;
-use App\Repository\UserSubjectRelationRepository;
+use App\Repository\Interface\CommentRepositoryInterface;
+use App\Repository\Interface\UserRepositoryInterface;
+use App\Repository\Interface\UserSubjectRelationRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
-use ApiPlatform\Core\Api\IriConverterInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Notifier\Recipient\Recipient;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class NotifyAdminsAboutCommentReportCommandHandler implements CommandHandler
 {
 	public function __construct(
-		private UserRepository $userRepository,
-		private CommentRepository $commentRepository,
-		private UserSubjectRelationRepository $relationRepository,
+		private UserRepositoryInterface $userRepository,
+		private CommentRepositoryInterface $commentRepository,
+		private UserSubjectRelationRepositoryInterface $relationRepository,
 		private TranslatorInterface $translator,
 		private EntityManagerInterface $entityManager,
 		private IriConverterInterface $iriConverter

@@ -5,8 +5,8 @@ namespace App\Controller\Auth;
 use App\Entity\Token;
 use App\Entity\User;
 use App\Http\Request\JsonExtractor;
-use App\Repository\TokenRepository;
-use App\Repository\UserRepository;
+use App\Repository\Interface\TokenRepositoryInterface;
+use App\Repository\Interface\UserRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,8 +18,8 @@ class PhoneVerificationController extends AbstractController
 {
     public function __construct(
         private JsonExtractor $jsonExtractor,
-        private TokenRepository $tokenRepository,
-        private UserRepository $userRepository,
+        private TokenRepositoryInterface $tokenRepository,
+        private UserRepositoryInterface $userRepository,
         private EntityManagerInterface $entityManager,
         private TranslatorInterface $translator
     ) {
