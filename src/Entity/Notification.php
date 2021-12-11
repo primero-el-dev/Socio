@@ -22,6 +22,8 @@ class Notification implements Entity
     use Create;
     use SoftDelete;
 
+    public const FRIEND_REQUEST = 'FRIEND_REQUEST';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -54,9 +56,14 @@ class Notification implements Entity
      */
     private ?User $recipient;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private ?string $messageSubject;
+
     public function __construct()
     {
-        $this->recipients = new ArrayCollection();
+        //
     }
 
     public function getId(): ?int
@@ -144,6 +151,18 @@ class Notification implements Entity
     public function setRecipient(?User $recipient): self
     {
         $this->recipient = $recipient;
+
+        return $this;
+    }
+
+    public function getMessageSubject(): ?string
+    {
+        return $this->messageSubject;
+    }
+
+    public function setMessageSubject(string $messageSubject): self
+    {
+        $this->messageSubject = $messageSubject;
 
         return $this;
     }

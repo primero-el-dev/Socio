@@ -14,7 +14,6 @@ use App\Repository\Interface\PostRepositoryInterface;
 use App\Repository\Interface\ReactionRepositoryInterface;
 use App\Repository\Interface\TimelineRepositoryInterface;
 use App\Repository\Interface\TokenRepositoryInterface;
-use App\Repository\Interface\UserRepositoryInterface;
 use App\Security\Roles;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -33,8 +32,6 @@ class Pong extends AbstractController
 {
 	public function __construct(
 		private EntityManagerInterface $entityManager,
-		// private UserRepository $userRepository,
-		private PostRepositoryInterface $postRepository,
 		private TokenRepositoryInterface $tokenRepository,
 		private ReactionRepositoryInterface $reactionRepository,
 		private CommentRepositoryInterface $commentRepository,
@@ -44,7 +41,7 @@ class Pong extends AbstractController
 		private UrlGeneratorInterface $urlGenerator,
 		private ValidatorInterface $validator,
 		private TranslatorInterface $translator,
-		private TimelineRepository $timelineRepository,
+		private TimelineRepositoryInterface $timelineRepository,
 		private NotifierInterface $notifier,
 		private UserRepositoryInterface $userRepository
 	) {
@@ -52,9 +49,9 @@ class Pong extends AbstractController
 
 	public function __invoke(Request $request)
 	{
-		$user = $this->userRepository->find(2);
+		// $user = $this->userRepository->find(2);
 		// $user->setConfigurationKeys(['a', 'b', 'c'], 'value');
-		dd($user);
+		// dd($user);
 
 		// $notification = (new Notification('New Invoice', ['sms/sinch']))
   //           ->content('You got a new invoice for 15 EUR.');

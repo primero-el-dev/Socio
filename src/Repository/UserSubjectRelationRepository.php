@@ -28,7 +28,7 @@ implements UserSubjectRelationRepositoryInterface
         parent::__construct($registry, UserSubjectRelation::class);
     }
 
-    public function findForSubject(Entity $subject): ?array
+    public function findForSubject(Entity $subject): array
     {
         return $this->findBy([
             'subjectIri' => $this->iriConverter->getIriFromItem($subject),

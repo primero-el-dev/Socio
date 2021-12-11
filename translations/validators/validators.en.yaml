@@ -48,6 +48,8 @@ entity:
       date:
         message: 'Birth date must be a proper date.'
     slug:
+      notBlank:
+        message: "Slug can't be empty."
       regex:
         message: 'Slug may contain only letters and dashes.'
       length:
@@ -55,6 +57,14 @@ entity:
         maxMessage: 'Slug must be {{ limit }} characters maximum.'
       uniqueIgnoreDeleted:
         message: 'Slug already exists in our database.'
+    login:
+      notBlank:
+        message: "Login can't be empty."
+      regex:
+        message: 'Login may contain only letters and dashes.'
+      length:
+        minMessage: 'Login must be {{ limit }} characters minimum.'
+        maxMessage: 'Login must be {{ limit }} characters maximum.'
   group:
     name:
       length:
@@ -64,6 +74,3 @@ entity:
       length:
         minMessage: 'Group slug must be at least {{ limit }} characters long.'
         maxMessage: 'Group slug must be at most {{ limit }} characters long.'
-    slug:
-      length:
-        maxMessage: 'Group description is too long.'

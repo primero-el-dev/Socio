@@ -35,12 +35,17 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  *      name="app_user",
  *      uniqueConstraints={
  *          @ORM\UniqueConstraint(
+ *              name="login_unique", 
+ *              columns={"login"},
+ *              options={"where": "(deleted_at IS NULL)"}
+ *          ),
+ *          @ORM\UniqueConstraint(
  *              name="email_unique", 
  *              columns={"email"},
  *              options={"where": "(deleted_at IS NULL)"}
  *          ),
  *          @ORM\UniqueConstraint(
- *              name="email_unique", 
+ *              name="slug_unique", 
  *              columns={"slug"},
  *              options={"where": "(deleted_at IS NULL)"}
  *          )
@@ -95,7 +100,7 @@ class User implements Entity, HasConfiguration, UserInterface, PasswordAuthentic
     /**
      * @ORM\Column(type="string")
      */
-    #[Groups(['write:user', 'admin:read'])]
+    #[Groups(['write:user'])]
     protected ?string $password;
 
 
@@ -216,8 +221,11 @@ class User implements Entity, HasConfiguration, UserInterface, PasswordAuthentic
      * @ORM\Column(type="string", length=255)
      */
     #[Groups(['insert:user', 'read:user'])]
+    #[Assert\NotBlank(
+        message: 'entity.user.slug.notBlank.message'
+    )]
     #[Assert\Regex(
-        pattern: '/^\w+$/',
+        pattern: '/^[\w\-]+$/',
         message: 'entity.user.slug.regex.message'
     )]
     #[Assert\Length(
@@ -227,6 +235,23 @@ class User implements Entity, HasConfiguration, UserInterface, PasswordAuthentic
         maxMessage: 'entity.user.slug.length.maxMessage'
     )]
     private ?string $slug;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    #[Groups(['insert:user', 'read:user'])]
+    #[Assert\NotBlank(message: 'entity.user.login.notBlank.message')]
+    #[Assert\Regex(
+        pattern: '/^[\w\-]+$/',
+        message: 'entity.user.login.regex.message'
+    )]
+    #[Assert\Length(
+        min: 5,
+        max: 255,
+        minMessage: 'entity.user.login.length.minMessage',
+        maxMessage: 'entity.user.login.length.maxMessage'
+    )]
+    private ?string $login;
 
 
     public function __construct()
@@ -576,6 +601,25 @@ class User implements Entity, HasConfiguration, UserInterface, PasswordAuthentic
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getTextIdentificator(): string
+    {
+        return ($this->name && $this->surname)
+            ? $this->name . ' ' . $this->surname
+            : $this->login;
+    }
+
+    public function getLogin(): ?string
+    {
+        return $this->login;
+    }
+
+    public function setLogin(string $login): self
+    {
+        $this->login = $login;
 
         return $this;
     }

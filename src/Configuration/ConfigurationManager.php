@@ -13,6 +13,7 @@ class ConfigurationManager
 				'show_email' => true,
 				'show_birth' => true,
 				'show_timeline' => false,
+				'show_phone' => false,
 			],
 		];
 	}

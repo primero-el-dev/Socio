@@ -27,3 +27,10 @@ App\Entity\User:
     delete:
       denormalization_context:
         groups: ['delete:user']
+    request_friend:
+      security: 'is_granted("REQUEST_FRIEND_USER", object)'
+      path: /users/{id}/request-friend
+      method: POST
+      controller: App\Controller\User\RequestFriendController
+      requirements:
+        id: \d+

@@ -64,14 +64,17 @@ class RegistrationController extends AbstractController
     private function createUserFromData(array $data): User
     {
         $user = new User();
+        $user->setLogin($data['login']);
         $user->setEmail($data['email']);
         $user->setBirth(\DateTimeImmutable::createFromFormat('Y-m-d', $data['birth']));
         $user->setName($data['name'] ?? null);
         $user->setSurname($data['surname'] ?? null);
         $user->setPhone($data['phone'] ?? null);
+        $user->setSlug($data['slug'] ?? null);
         $hashedPassword = $this->passwordHasher->hashPassword($user, $data['password']);
         $user->setConfiguration(ConfigurationManager::getDefaultForUser());
         $user->setPassword($hashedPassword);
+        $user->setConfiguration(ConfigurationManager::getDefaultForUser());
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();

@@ -39,13 +39,6 @@ class RegistrationDataValidator extends DataValidator
 		        ),
 		        new Email(message: $this->translator->trans(
 		        	'entity.user.email.email.message')),
-		        new UniqueIgnoreDeleted(
-		        	className: User::class,
-		        	valueColumn: 'email',
-		        	message: $this->translator->trans(
-		        		'entity.user.email.uniqueIgnoreDeleted.message'),
-		        	entityManager: $this->entityManager
-		        ),
 			],
 			'name' => [
 				new Regex(

@@ -9,7 +9,9 @@ class SendAppNotificationCommand implements Command//, AsyncDoctrine
 {
 	public function __construct(
 		private array $userIds,
-		private string $subject,
+		private string $type,
+		private string $subjectIri,
+		private string $messageSubject,
 		private string $content = ''
 	) {
 	}
@@ -19,9 +21,19 @@ class SendAppNotificationCommand implements Command//, AsyncDoctrine
 		return $this->userIds;
 	}
 
-	public function getSubject(): string
+	public function getType(): string
 	{
-		return $this->subject;
+		return $this->type;
+	}
+
+	public function getSubjectIri(): string
+	{
+		return $this->subjectIri;
+	}
+
+	public function getMessageSubject(): string
+	{
+		return $this->messageSubject;
 	}
 
 	public function getContent(): string

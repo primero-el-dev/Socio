@@ -2,12 +2,14 @@
 
 namespace App\Repository\Interface;
 
+use App\Entity\Entity;
+use App\Entity\User;
 use Doctrine\Persistence\ObjectRepository;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 interface UserSubjectRelationRepositoryInterface extends ObjectRepository
 {
-	public function findForSubject(Entity $subject): ?array;
+	public function findForSubject(Entity $subject): array;
 
     public function isObjectIriReportedByUser(string $iri, User $user): bool;
 

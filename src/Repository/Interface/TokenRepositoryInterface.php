@@ -2,6 +2,8 @@
 
 namespace App\Repository\Interface;
 
+use App\Entity\Token;
+use App\Entity\User;
 use Doctrine\Persistence\ObjectRepository;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 

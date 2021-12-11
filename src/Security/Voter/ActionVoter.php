@@ -26,10 +26,7 @@ class ActionVoter extends Voter
 
     protected function supports(string $attribute, $subject): bool
     {
-        [$object, $userId] = $subject;
-
-        return in_array($attribute, self::ROLES) && 
-            $object instanceof Entity;
+        return in_array($attribute, self::ROLES) && is_array($sbject);
     }
 
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool

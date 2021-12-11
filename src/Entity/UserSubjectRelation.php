@@ -20,6 +20,7 @@ class UserSubjectRelation implements Entity
     public const ROLE_ADMIN = 'ROLE_ADMIN';
     public const ROLE_MEMBER = 'ROLE_MEMBER';
     public const REQUEST_MEMBERSHIP = 'REQUEST_MEMBERSHIP';
+    
     public const LIST_COMMENT = 'LIST_COMMENT';
     public const READ_COMMENT = 'READ_COMMENT';
     public const CREATE_COMMENT = 'CREATE_COMMENT';
@@ -29,6 +30,9 @@ class UserSubjectRelation implements Entity
     public const REPORT_COMMENT = 'REPORT_COMMENT';
     public const APPROVE_COMMENT = 'APPROVE_COMMENT';
     public const BAN_COMMENT = 'BAN_COMMENT';
+
+    public const REQUEST_FRIEND = 'REQUEST_FRIEND';
+    public const FRIEND = 'FRIEND';
 
     /**
      * @ORM\Id
@@ -51,7 +55,7 @@ class UserSubjectRelation implements Entity
     /**
      * @ORM\Column(type="boolean", options={"default":false})
      */
-    protected ?bool $denied;
+    protected bool $denied = false;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)

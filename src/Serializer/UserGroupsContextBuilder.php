@@ -35,6 +35,10 @@ final class UserGroupsContextBuilder implements SerializerContextBuilderInterfac
 
     	$id = $request->attributes->get($identifier);
     	$user = $this->userRepository->find($id);
+
+        if (!$user) {
+            return $context;
+        }
     	
         $user->setConfigurationKeys(['security', 'show_email'], true);
 
