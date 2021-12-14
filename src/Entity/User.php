@@ -263,6 +263,11 @@ class User implements Entity, HasConfiguration, UserInterface, PasswordAuthentic
         $this->notifications = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->login;
+    }
+
     public static function createFromPayload($id, array $payload)
     {
         return (new self())

@@ -6,6 +6,7 @@ use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Entity\User;
 use App\Entity\UserSubjectRelation;
 use App\Repository\Interface\UserSubjectRelationRepositoryInterface;
+use App\Util\EntityUtils;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -14,6 +15,7 @@ class UserVoter extends Voter
 {
     private const ROLES = [
         'request_friend' => 'REQUEST_FRIEND_USER',
+        'break_friendship' => 'BREAK_FRIENDSHIP_USER',
     ];
 
     public function __construct(
@@ -38,6 +40,7 @@ class UserVoter extends Voter
 
         return match ($attribute) {
             self::ROLES['request_friend'] => $this->canRequestFriend($user, $subject),
+            self::ROLES['break_friendship'] => $this->canBreakFriendship($user, $subject),
             default => false,
         };
     }
@@ -46,8 +49,16 @@ class UserVoter extends Voter
     {
         $hasRelation = $this->hasRelation();
 
-        return !$hasRelation($user, UserSubjectRelation::REQUEST_FRIEND, $subject) &&
+        return !EntityUtils::areSame($user, $subject) && 
             !$hasRelation($user, UserSubjectRelation::FRIEND, $subject);
+    }
+
+    private function canBreakFriendship(User $user, User $subject): bool
+    {
+        $hasRelation = $this->hasRelation();
+return true;
+        return !EntityUtils::areSame($user, $subject) &&
+            $hasRelation($user, UserSubjectRelation::FRIEND, $subject);
     }
 
     private function hasRelation(): callable

@@ -34,3 +34,10 @@ App\Entity\User:
       controller: App\Controller\User\RequestFriendController
       requirements:
         id: \d+
+    break_friendship:
+      security: 'is_granted("BREAK_FRIENDSHIP_USER", object)'
+      path: /users/{id}/break-friendship
+      method: POST
+      controller: App\Controller\User\BreakFriendshipController
+      requirements:
+        id: \d+

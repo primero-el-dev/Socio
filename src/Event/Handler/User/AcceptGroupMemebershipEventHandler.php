@@ -28,7 +28,7 @@ class AcceptGroupMemebershipEventHandler implements EventHandler
 		);
 	}
 
-	private function getContent(string $groupName)
+	private function getContent(string $groupName): string
 	{
 		return sprintf(
 			$this->translator->trans(
