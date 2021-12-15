@@ -29,6 +29,7 @@ class SendAppNotificationCommandHandler implements CommandHandler
 				$this->entityManager->flush();
 			}
 		}
+		$this->entityManager->flush();
 	}
 
 	private function createNotification(

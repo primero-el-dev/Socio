@@ -28,16 +28,23 @@ App\Entity\User:
       denormalization_context:
         groups: ['delete:user']
     request_friend:
-      security: 'is_granted("REQUEST_FRIEND_USER", object)'
-      path: /users/{id}/request-friend
+      security: 'is_granted("REQUEST_FRIENDSHIP_USER", object)'
+      path: /users/{id}/request-friendship
       method: POST
-      controller: App\Controller\User\RequestFriendController
+      controller: App\Controller\User\RequestFriendshipController
+      requirements:
+        id: \d+
+    accept_friend:
+      security: 'is_granted("ACCEPT_FRIENDSHIP_USER", object)'
+      path: /users/{id}/accept-friendship
+      method: POST
+      controller: App\Controller\Relation\AcceptFriendshipController
       requirements:
         id: \d+
     break_friendship:
       security: 'is_granted("BREAK_FRIENDSHIP_USER", object)'
       path: /users/{id}/break-friendship
       method: POST
-      controller: App\Controller\User\BreakFriendshipController
+      controller: App\Controller\Relation\BreakFriendshipController
       requirements:
         id: \d+

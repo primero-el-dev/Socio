@@ -7,8 +7,8 @@ use App\Event\Event;
 abstract class RelationActionEvent implements Event
 {
 	public function __construct(
-		int $initiatorId, 
-		int $subjectId
+		protected int $initiatorId, 
+		protected int $subjectId
 	) {
 	}
 
@@ -21,4 +21,6 @@ abstract class RelationActionEvent implements Event
 	{
 		return $this->subjectId;
 	}
+
+	abstract public function getType(): string;
 }

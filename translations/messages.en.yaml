@@ -20,12 +20,15 @@ notification:
     groupMembershipAccepted:
       subject: 'Membership accepted'
       content: 'You''re now a member of a group "%s".'
-    friendRequestSend:
+    requestFrendship:
       subject: 'Friend reqeust send'
       content: 'User "%s" send you friend request.'
     breakFriendship:
       subject: 'Friendship broken'
       content: 'User "%s" is now not Your friend.'
+    acceptFriendship:
+      subject: 'Friendship accepted'
+      content: 'User "%s" is now Your friend.'
   success:
     resetPassword: 'Password was changed successfully.'
     forgotPassword: "We've send You an email for changing password."
@@ -38,8 +41,9 @@ notification:
     groupMemberAccepted: 'You''re now a member of a "%s".'
     quitGroup: "You've escaped group."
     removeMember: 'Member was removed successfully.'
-    friendRequestSend: 'Your friend request has been send.'
-    friendshipBroken: "You've broken a relationship successfully.'
+    friendshipRequested: 'Your friend request has been send.'
+    friendshipBroken: "You've broken a relationship successfully."
+    friendshipAccepted: 'Friendship request was accepted.'
 
 email:
   registrationVerification:

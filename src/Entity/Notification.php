@@ -22,7 +22,9 @@ class Notification implements Entity
     use Create;
     use SoftDelete;
 
-    public const FRIEND_REQUEST = 'FRIEND_REQUEST';
+    public const REQUEST_FRIENDSHIP = 'REQUEST_FRIENDSHIP';
+    public const BREAK_FRIENDSHIP = 'BREAK_FRIENDSHIP';
+    public const ACCEPT_FRIENDSHIP = 'ACCEPT_FRIENDSHIP';
 
     /**
      * @ORM\Id

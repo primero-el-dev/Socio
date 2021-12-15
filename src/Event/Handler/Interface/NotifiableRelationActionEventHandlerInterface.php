@@ -8,4 +8,8 @@ use App\Event\Interface\NotifiableRelationActionEvent;
 interface NotifiableRelationActionEventHandlerInterface extends EventHandler
 {
 	public function handleNotifiableRelationActionEvent(NotifiableRelationActionEvent $event): void;
+
+	public function getSubjectKey(): string;
+
+	public function getContentKey(): string;
 }

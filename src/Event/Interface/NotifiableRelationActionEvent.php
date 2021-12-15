@@ -7,4 +7,6 @@ interface NotifiableRelationActionEvent
 	public function getInitiatorId(): int;
 
 	public function getSubjectId(): int;
+
+	public function getType(): string;
 }

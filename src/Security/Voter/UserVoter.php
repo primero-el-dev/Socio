@@ -14,7 +14,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class UserVoter extends Voter
 {
     private const ROLES = [
-        'request_friend' => 'REQUEST_FRIEND_USER',
+        'request_friendship' => 'REQUEST_FRIENDSHIP_USER',
+        'accept_friendship' => 'ACCEPT_FRIENDSHIP_USER',
         'break_friendship' => 'BREAK_FRIENDSHIP_USER',
     ];
 
@@ -39,24 +40,35 @@ class UserVoter extends Voter
         }
 
         return match ($attribute) {
-            self::ROLES['request_friend'] => $this->canRequestFriend($user, $subject),
+            self::ROLES['request_friendship'] => $this->canRequestFriendship($user, $subject),
+            self::ROLES['accept_friendship'] => $this->canBreakFriendship($user, $subject),
             self::ROLES['break_friendship'] => $this->canBreakFriendship($user, $subject),
             default => false,
         };
     }
 
-    private function canRequestFriend(User $user, User $subject): bool
+    private function canRequestFriendship(User $user, User $subject): bool
     {
         $hasRelation = $this->hasRelation();
 
         return !EntityUtils::areSame($user, $subject) && 
+            $hasRelation($subject, UserSubjectRelation::REQUEST_FRIENDSHIP, $user) &&
+            !$hasRelation($user, UserSubjectRelation::FRIEND, $subject);
+    }
+
+    private function canAcceptFriendship(User $user, User $subject): bool
+    {
+        $hasRelation = $this->hasRelation();
+
+        return !EntityUtils::areSame($user, $subject) && 
+            $hasRelation($subject, UserSubjectRelation::REQUEST_FRIENDSHIP, $user) &&
             !$hasRelation($user, UserSubjectRelation::FRIEND, $subject);
     }
 
     private function canBreakFriendship(User $user, User $subject): bool
     {
         $hasRelation = $this->hasRelation();
-return true;
+
         return !EntityUtils::areSame($user, $subject) &&
             $hasRelation($user, UserSubjectRelation::FRIEND, $subject);
     }

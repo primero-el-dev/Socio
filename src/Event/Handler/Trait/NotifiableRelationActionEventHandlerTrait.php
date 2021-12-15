@@ -9,34 +9,40 @@ use App\Message\User\SendAppNotificationCommand;
 use App\Repository\Interface\UserRepositoryInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use ApiPlatform\Core\Api\IriConverterInterface;
 
 trait NotifiableRelationActionEventHandlerTrait
 {
 	protected UserRepositoryInterface $userRepository;
 	protected TranslatorInterface $translator;
+	protected IriConverterInterface $iriConverter;
 	protected string $subject;
 	protected string $content;
 
-	public function handleNotifiableRelationActionEvent(NotifiableRelationActionEvent $event): void
+	public function handleNotifiableRelationActionEvent(
+		NotifiableRelationActionEvent $event
+	): void
 	{
 		$user = $this->userRepository->find($event->getInitiatorId());
 
 		$this->commandBus->dispatch(
 			new SendAppNotificationCommand(
-				[$event->getSubjectId()],
-				$this->getSubject($user),
-				$this->getContent($user)
+				userIds: [$event->getSubjectId()],
+				type: $event->getType(),
+				subjectIri: $this->iriConverter->getIriFromItem($user),
+				messageSubject: $this->getSubject($user),
+				content: $this->getContent($user)
 			)
 		);
 	}
 
-	protected function getSubject(User $user): string
+	public function getSubject(User $user): string
 	{
-		return sprintf($this->translator->trans($this->subject), $user);
+		return sprintf($this->translator->trans($this->getSubjectKey()), $user);
 	}
 
-	protected function getContent(User $user): string
+	public function getContent(User $user): string
 	{
-		return sprintf($this->translator->trans($this->content), $user);
+		return sprintf($this->translator->trans($this->getContentKey()), $user);
 	}
 }

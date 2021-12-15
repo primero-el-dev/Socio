@@ -6,10 +6,10 @@ use App\Entity\Notification;
 use App\Event\Interface\NotifiableRelationActionEvent;
 use App\Event\User\Relation\RelationActionEvent;
 
-class BreakFriendshipEvent extends RelationActionEvent implements NotifiableRelationActionEvent
+class AcceptFriendshipEvent extends RelationActionEvent implements NotifiableRelationActionEvent
 {
 	public function getType(): string
 	{
-		return Notification::BREAK_FRIENDSHIP;
+		return Notification::ACCEPT_FRIENDSHIP;
 	}
 }
