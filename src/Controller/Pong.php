@@ -18,6 +18,7 @@ use App\Repository\Interface\TokenRepositoryInterface;
 use App\Repository\Interface\UserRepositoryInterface;
 use App\Repository\Interface\UserSubjectRelationRepositoryInterface;
 use App\Security\Roles;
+use App\Util\StringUtil;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -53,6 +54,11 @@ class Pong extends AbstractController
 
 	public function __invoke(Request $request)
 	{
+		echo StringUtil::dashedToSnakeCase('ala-ma-kota', false);
+
+		die;
+
+
 		$first = $this->userRepository->find(2);
 		$second = $this->userRepository->find(13);
 

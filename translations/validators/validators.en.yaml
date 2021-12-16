@@ -65,6 +65,11 @@ entity:
       length:
         minMessage: 'Login must be {{ limit }} characters minimum.'
         maxMessage: 'Login must be {{ limit }} characters maximum.'
+    gender:
+      notBlank:
+        message: 'Gender is missing.'
+      regex:
+        message: 'Gender is invalid.'
   group:
     name:
       length:

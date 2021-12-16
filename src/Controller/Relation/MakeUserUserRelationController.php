@@ -31,8 +31,8 @@ abstract class MakeUserUserRelationController extends AbstractController
     {
         $loggedUser = $this->userRepository->find($this->getUser()->getId());
 
-        $this->createListedRelations($loggedUser, $user);
         $this->deleteListedRelations($loggedUser, $user);
+        $this->createListedRelations($loggedUser, $user);
 
         if (class_exists($event = $this->getEventClass())) {
             $this->eventBus->dispatch(

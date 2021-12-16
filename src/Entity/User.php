@@ -254,6 +254,18 @@ class User implements Entity, HasConfiguration, UserInterface, PasswordAuthentic
     private ?string $login;
 
 
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    #[Assert\NotNull(message: 'entity.user.gender.notBlank.message')]
+    #[Assert\NotBlank(message: 'entity.user.gender.notBlank.message')]
+    #[Assert\Regex(
+        pattern: '/^(MALE)|(FEMALE)|(OTHER)$/',
+        message: 'entity.user.gender.regex.message'
+    )]
+    private ?string $gender;
+
+
     public function __construct()
     {
         $this->roles = Roles::getDefaultForUser();
@@ -625,6 +637,18 @@ class User implements Entity, HasConfiguration, UserInterface, PasswordAuthentic
     public function setLogin(string $login): self
     {
         $this->login = $login;
+
+        return $this;
+    }
+
+    public function getGender(): ?string
+    {
+        return $this->gender;
+    }
+
+    public function setGender(string $gender): self
+    {
+        $this->gender = $gender;
 
         return $this;
     }

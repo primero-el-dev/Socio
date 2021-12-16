@@ -31,7 +31,7 @@ App\Entity\User:
       security: 'is_granted("REQUEST_FRIENDSHIP_USER", object)'
       path: /users/{id}/request-friendship
       method: POST
-      controller: App\Controller\User\RequestFriendshipController
+      controller: App\Controller\Relation\RequestFriendshipController
       requirements:
         id: \d+
     accept_friend:
