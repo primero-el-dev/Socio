@@ -18,6 +18,7 @@ use App\Repository\Interface\TokenRepositoryInterface;
 use App\Repository\Interface\UserRepositoryInterface;
 use App\Repository\Interface\UserSubjectRelationRepositoryInterface;
 use App\Security\Roles;
+use App\Util\ArrayUtil;
 use App\Util\StringUtil;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -54,8 +55,13 @@ class Pong extends AbstractController
 
 	public function __invoke(Request $request)
 	{
-		echo StringUtil::dashedToSnakeCase('ala-ma-kota', false);
+		// echo StringUtil::dashedToSnakeCase('ala-ma-kota', false);
 
+		$a = ['a' => []];
+
+		ArrayUtil::setTreeBranch(['d', 'b', 'c'], 123, $a);
+
+		dd($a);
 		die;
 
 

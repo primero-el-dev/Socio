@@ -16,8 +16,7 @@ trait NotifiableRelationActionEventHandlerTrait
 	protected UserRepositoryInterface $userRepository;
 	protected TranslatorInterface $translator;
 	protected IriConverterInterface $iriConverter;
-	protected string $subject;
-	protected string $content;
+	protected MessageBusInterface $commandBus;
 
 	public function handleNotifiableRelationActionEvent(
 		NotifiableRelationActionEvent $event

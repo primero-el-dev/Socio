@@ -25,43 +25,43 @@ class MakeNotifiableRelationEventCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('prefix', InputArgument::REQUIRED, 'Name prefix')
+            ->addArgument('relation', InputArgument::REQUIRED, 'Relation name')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $prefix = $input->getArgument('prefix');
+        $relation = $input->getArgument('relation');
 
-        if (file_exists($this->getPath($prefix))) {
+        if (file_exists($this->getPath($relation))) {
             $io->error('Event already exists');
 
             return Command::FAILURE;
         }
 
-        $this->createEvent($prefix);
+        $this->createEvent($relation);
 
         $io->success('Event created');
 
         return Command::SUCCESS;
     }
 
-    private function createEvent(string $prefix): void
+    private function createEvent(string $relation): void
     {
-        file_put_contents($this->getPath($prefix), $this->getTemplate($prefix));
+        file_put_contents($this->getPath($relation), $this->getTemplate($relation));
     }
 
-    private function getPath(string $prefix): string
+    private function getPath(string $relation): string
     {
         return sprintf(
-            '%s/src/Event/User/Relation/%sEvent.php',
+            '%s/src/Event/User/Relation/%sRelationEvent.php',
             $this->projectDir,
-            $prefix
+            $relation
         );
     }
 
-    private function getTemplate(string $prefix): string
+    private function getTemplate(string $relation): string
     {
         return sprintf('<?php
 
@@ -71,15 +71,15 @@ use App\Entity\Notification;
 use App\Event\Interface\NotifiableRelationActionEvent;
 use App\Event\User\Relation\RelationActionEvent;
 
-class %sEvent extends RelationActionEvent implements NotifiableRelationActionEvent
+class %sRelationEvent extends RelationActionEvent implements NotifiableRelationActionEvent
 {
     public function getType(): string
     {
-        return Notification::%s;
+        return Notification::%s_RELATION;
     }
 }',
-            $prefix,
-            StringUtil::camelCaseToSnakeCase($prefix, true)
+            $relation,
+            StringUtil::camelCaseToSnakeCase($relation, true)
         );
     }
 }

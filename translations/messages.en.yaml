@@ -20,15 +20,25 @@ notification:
     groupMembershipAccepted:
       subject: 'Membership accepted'
       content: 'You''re now a member of a group "%s".'
-    requestFrendship:
-      subject: 'Friend reqeust send'
-      content: 'User "%s" send you friend request.'
-    breakFriendship:
-      subject: 'Friendship broken'
-      content: 'User "%s" is now not Your friend.'
-    acceptFriendship:
-      subject: 'Friendship accepted'
-      content: 'User "%s" is now Your friend.'
+    relation:
+      requestFriend:
+        subject: 'Friend reqeust send'
+        content: 'User "%s" send you friend request.'
+      acceptFriend:
+        subject: 'Friendship accepted'
+        content: 'User "%s" is now Your friend.'
+      breakFriend:
+        subject: 'Friendship broken'
+        content: 'User "%s" is now not Your friend.'
+      requestMother:
+        subject: 'Mother relation reqeust send'
+        content: 'User "%s" send you mother relation request.'
+      acceptMother:
+        subject: 'Mother relation accepted'
+        content: 'User "%s" is now Your mother.'
+      breakMother:
+        subject: 'Mother relation broken'
+        content: 'User "%s" is now not Your mother.'
   success:
     resetPassword: 'Password was changed successfully.'
     forgotPassword: "We've send You an email for changing password."
@@ -41,9 +51,13 @@ notification:
     groupMemberAccepted: 'You''re now a member of a "%s".'
     quitGroup: "You've escaped group."
     removeMember: 'Member was removed successfully.'
-    friendshipRequested: 'Your friend request has been send.'
-    friendshipBroken: "You've broken a relationship successfully."
-    friendshipAccepted: 'Friendship request was accepted.'
+    relation:
+      requestFriend: 'Your friend request has been send.'
+      acceptFriend: 'Friendship request was accepted.'
+      breakFriend: "You've broken a relationship successfully."
+      requestMother: 'Your mother request has been send.'
+      acceptMother: 'Mother request was accepted.'
+      breakMother: "You've broken a mother relationship successfully."
 
 email:
   registrationVerification:

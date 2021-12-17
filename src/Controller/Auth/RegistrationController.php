@@ -25,8 +25,6 @@ class RegistrationController extends AbstractController
     public function __construct(
         private TranslatorInterface $translator,
         private RepeatedPasswordDataValidator $passwordValidator,
-        private PhoneDataValidator $phoneValidator,
-        private RegistrationDataValidator $dataValidator,
         private MessageBusInterface $eventBus,
         private EntityManagerInterface $entityManager,
         private UserPasswordHasherInterface $passwordHasher,
@@ -37,15 +35,8 @@ class RegistrationController extends AbstractController
     {
         $data = $this->getJson($request);
 
-        $this->dataValidator->validate($data);
         $this->passwordValidator->validate($data);
-        $this->phoneValidator->validate($data);
-
-        $errors = array_merge(
-            $this->dataValidator->getErrors(), 
-            $this->passwordValidator->getErrors(),
-            $this->phoneValidator->getErrors()
-        );
+        $errors = $this->passwordValidator->getErrors();
 
         if (!empty($errors)) {
             return new JsonResponse(['errors' => $errors]);

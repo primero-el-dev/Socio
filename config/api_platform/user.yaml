@@ -1,50 +1,79 @@
 App\Entity\User:
   attributes:
     normalization_context:
-      groups: ['read:user']
+      groups:
+        - 'read:user'
     denormalization_context:
-      groups: ['write:user']
+      groups:
+        - 'write:user'
   collectionOperations:
     get:
       normalization_context:
-        groups: ['read:user']
+        groups:
+          - 'read:user'
     post:
       denormalization_context:
-        groups: ['insert:user']
+        groups:
+          - 'insert:user'
     me:
       path: /users/me
       method: GET
       controller: App\Controller\User\MeController
       normalization_context:
-        groups: ['read:user:self']
+        groups:
+          - 'read:user:self'
   itemOperations:
     get:
       normalization_context:
-        groups: ['read:user']
+        groups:
+          - 'read:user'
     put:
       denormalization_context:
-        groups: ['update:user']
+        groups:
+          - 'update:user'
     delete:
       denormalization_context:
-        groups: ['delete:user']
-    request_friend:
-      security: 'is_granted("REQUEST_FRIENDSHIP_USER", object)'
-      path: /users/{id}/request-friendship
+        groups:
+          - 'delete:user'
+    break_friend_relation:
+      security: 'is_granted("BREAK_FRIEND_RELATION", object)'
+      path: '/users/{id}/break-friend-relation'
       method: POST
-      controller: App\Controller\Relation\RequestFriendshipController
+      controller: App\Controller\Relation\BreakFriendRelationController
       requirements:
         id: \d+
-    accept_friend:
-      security: 'is_granted("ACCEPT_FRIENDSHIP_USER", object)'
-      path: /users/{id}/accept-friendship
+    accept_friend_relation:
+      security: 'is_granted("ACCEPT_FRIEND_RELATION", object)'
+      path: '/users/{id}/accept-friend-relation'
       method: POST
-      controller: App\Controller\Relation\AcceptFriendshipController
+      controller: App\Controller\Relation\AcceptFriendRelationController
       requirements:
         id: \d+
-    break_friendship:
-      security: 'is_granted("BREAK_FRIENDSHIP_USER", object)'
-      path: /users/{id}/break-friendship
+    request_friend_relation:
+      security: 'is_granted("REQUEST_FRIEND_RELATION", object)'
+      path: '/users/{id}/request-friend-relation'
       method: POST
-      controller: App\Controller\Relation\BreakFriendshipController
+      controller: App\Controller\Relation\RequestFriendRelationController
+      requirements:
+        id: \d+
+    break_mother_relation:
+      security: 'is_granted("BREAK_MOTHER_RELATION", object)'
+      path: '/users/{id}/break-mother-relation'
+      method: POST
+      controller: App\Controller\Relation\BreakMotherRelationController
+      requirements:
+        id: \d+
+    accept_mother_relation:
+      security: 'is_granted("ACCEPT_MOTHER_RELATION", object)'
+      path: '/users/{id}/accept-mother-relation'
+      method: POST
+      controller: App\Controller\Relation\AcceptMotherRelationController
+      requirements:
+        id: \d+
+    request_mother_relation:
+      security: 'is_granted("REQUEST_MOTHER_RELATION", object)'
+      path: '/users/{id}/request-mother-relation'
+      method: POST
+      controller: App\Controller\Relation\RequestMotherRelationController
       requirements:
         id: \d+

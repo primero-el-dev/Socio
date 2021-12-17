@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
 abstract class BreakUserUserRelationController extends AbstractController
 {
@@ -21,6 +22,7 @@ abstract class BreakUserUserRelationController extends AbstractController
         protected MessageBusInterface $eventBus,
         protected TranslatorInterface $translator,
         protected IriConverterInterface $iriConverter,
+        protected EntityManagerInterface $entityManagerPRe,
         protected UserRepositoryInterface $userRepository,
         protected UserSubjectRelationRepositoryInterface $relationRepository
     ) {
@@ -42,9 +44,16 @@ abstract class BreakUserUserRelationController extends AbstractController
             );
         }
 
+        $this->additionalAction($user, $request);
+
         return $this->json([
             'success' => $this->translator->trans($this->getResponseKey()),
         ]);
+    }
+
+    protected function additionalAction(User $user, Request $request): void
+    {
+        //
     }
 
     protected function deleteListedRelations(User $first, User $second): void

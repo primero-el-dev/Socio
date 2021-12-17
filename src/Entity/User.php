@@ -48,6 +48,11 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  *              name="slug_unique", 
  *              columns={"slug"},
  *              options={"where": "(deleted_at IS NULL)"}
+ *          ),
+ *          @ORM\UniqueConstraint(
+ *              name="phone_unique", 
+ *              columns={"phone"},
+ *              options={"where": "(deleted_at IS NULL)"}
  *          )
  *      }
  * )

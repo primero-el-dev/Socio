@@ -12,76 +12,78 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use App\Util\StringUtil;
 
 #[AsCommand(
-    name: 'make:create-relation-controller',
+    name: 'make:request-relation-controller',
     description: 'Make controller for creatring new user-user relation',
 )]
-class MakeCreateRelationControllerCommand extends Command
+class MakeRequestRelationControllerCommand extends Command
 {
     public function __construct(private string $projectDir)
     {
-        parent::__construct('make:create-relation-controller');
+        parent::__construct('make:request-relation-controller');
     }
 
     protected function configure(): void
     {
         $this
-            ->addArgument('prefix', InputArgument::REQUIRED, 'Name prefix')
+            ->addArgument('relation', InputArgument::REQUIRED, 'Relation name')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $prefix = $input->getArgument('prefix');
+        $relation = $input->getArgument('relation');
 
-        if (file_exists($this->getPath($prefix))) {
+        if (file_exists($this->getPath($relation))) {
             $io->error('Controller already exists');
 
             return Command::FAILURE;
         }
 
-        $this->createEvent($prefix);
+        $this->createEvent($relation);
 
         $io->success('Controller created');
 
         return Command::SUCCESS;
     }
 
-    private function createEvent(string $prefix): void
+    private function createEvent(string $relation): void
     {
-        file_put_contents($this->getPath($prefix), $this->getTemplate($prefix));
+        file_put_contents($this->getPath($relation), $this->getTemplate($relation));
     }
 
-    private function getPath(string $prefix): string
+    private function getPath(string $relation): string
     {
         return sprintf(
-            '%s/src/Controller/Relation/%sController.php',
+            '%s/src/Controller/Relation/Request%sRelationController.php',
             $this->projectDir,
-            $prefix
+            $relation
         );
     }
 
-    private function getTemplate(string $prefix): string
+    private function getTemplate(string $relation): string
     {
         return sprintf('<?php
 
 namespace App\Controller\Relation;
 
+use App\Entity\User;
 use App\Controller\Relation\MakeUserUserRelationController;
 use App\Entity\UserSubjectRelation;
-use App\Event\User\Relation\%sEvent;
+use Symfony\Component\HttpFoundation\Request;
+use App\Event\User\Relation\Request%sRelationEvent;
 
-class %sController extends MakeUserUserRelationController
+class Request%sRelationController extends MakeUserUserRelationController
 {
     protected function getEventClass(): string
     {
-        return %sEvent::class;
+        return Request%sRelationEvent::class;
     }
 
     protected function getLoggedUserCreateRelations(): array
     {
         return [
-            
+            UserSubjectRelation::REQUEST_%s,
         ];
     }
 
@@ -95,29 +97,34 @@ class %sController extends MakeUserUserRelationController
     protected function getLoggedUserDeleteRelations(): array
     {
         return [
-            UserSubjectRelation::%s,
+            
         ];
     }
 
     protected function getSubjectUserDeleteRelations(): array
     {
         return [
-            UserSubjectRelation::%s,
+            
         ];
     }
     
     protected function getResponseKey(): string
     {
-        return \'notification.success.%s\';
+        return \'notification.success.relation.request%s\';
+    }
+
+    protected function additionalAction(User $user, Request $request): void
+    {
+        //
     }
 }
 ',
-            $prefix,
-            $prefix,
-            $prefix,
-            StringUtil::camelCaseToSnakeCase($prefix, true),
-            StringUtil::camelCaseToSnakeCase($prefix, true),
-            lcfirst($prefix)
+            $relation,
+            $relation,
+            $relation,
+            StringUtil::camelCaseToSnakeCase($relation, StringUtil::UPPERCASE),
+            ucfirst($relation)
         );
     }
 }
+

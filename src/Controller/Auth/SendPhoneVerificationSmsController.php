@@ -24,27 +24,13 @@ class SendPhoneVerificationSmsController extends AbstractController
         private TranslatorInterface $translator,
         private EntityManagerInterface $entityManager,
         private MessageBusInterface $commandBus,
-        private JsonExtractor $jsonExtractor,
-        private PhoneDataValidator $phoneValidator
+        private JsonExtractor $jsonExtractor
     ) {
     }
 
     public function __invoke(Request $request): Response
     {
         $user = $this->userRepository->find($this->getUser()->getId());
-        
-        // if ($this->jsonExtractor->hasData($request)) {
-        //     $data = $this->jsonExtractor->extract($request);
-
-        //     if (!$this->phoneValidator->validate($data)) {
-        //         return new JsonResponse([
-        //             'errors' => $this->phoneValidator->getErrors(),
-        //         ]);
-        //     }
-
-        //     if ($data['phone'] && $data['phone'] === $user->getPhone())
-        //     $this->assignDataToUser($data, $user);
-        // }
 
         if ($user->getPhoneVerified()) {
             return new JsonResponse([

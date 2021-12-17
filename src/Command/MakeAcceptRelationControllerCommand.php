@@ -12,14 +12,14 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use App\Util\StringUtil;
 
 #[AsCommand(
-    name: 'make:break-relation-controller',
-    description: 'Make controller for breaking user-user relation',
+    name: 'make:accept-relation-controller',
+    description: 'Make controller for creatring new user-user relation',
 )]
-class MakeBreakRelationControllerCommand extends Command
+class MakeAcceptRelationControllerCommand extends Command
 {
     public function __construct(private string $projectDir)
     {
-        parent::__construct('make:break-relation-controller');
+        parent::__construct('make:accept-relation-controller');
     }
 
     protected function configure(): void
@@ -55,7 +55,7 @@ class MakeBreakRelationControllerCommand extends Command
     private function getPath(string $relation): string
     {
         return sprintf(
-            '%s/src/Controller/Relation/%sRelationController.php',
+            '%s/src/Controller/Relation/Accept%sRelationController.php',
             $this->projectDir,
             $relation
         );
@@ -68,35 +68,49 @@ class MakeBreakRelationControllerCommand extends Command
 namespace App\Controller\Relation;
 
 use App\Entity\User;
+use App\Controller\Relation\MakeUserUserRelationController;
 use App\Entity\UserSubjectRelation;
-use App\Controller\Relation\BreakUserUserRelationController;
 use Symfony\Component\HttpFoundation\Request;
-use App\Event\User\Relation\Break%sRelationEvent;
+use App\Event\User\Relation\Accept%sRelationEvent;
 
-class Break%sRelationController extends BreakUserUserRelationController
+class Accept%sRelationController extends MakeUserUserRelationController
 {
     protected function getEventClass(): string
     {
-        return Break%sRelationEvent::class;
+        return Accept%sRelationEvent::class;
     }
 
-    protected function getLoggedUserDeleteRelations(): array
+    protected function getLoggedUserCreateRelations(): array
+    {
+        return [
+            
+        ];
+    }
+
+    protected function getSubjectUserCreateRelations(): array
     {
         return [
             UserSubjectRelation::%s,
         ];
     }
 
+    protected function getLoggedUserDeleteRelations(): array
+    {
+        return [
+            
+        ];
+    }
+
     protected function getSubjectUserDeleteRelations(): array
     {
         return [
-
+            UserSubjectRelation::REQUEST_%s,
         ];
     }
     
     protected function getResponseKey(): string
     {
-        return \'notification.success.relation.break%s\';
+        return \'notification.success.relation.accept%s\';
     }
 
     protected function additionalAction(User $user, Request $request): void
@@ -108,6 +122,7 @@ class Break%sRelationController extends BreakUserUserRelationController
             $relation,
             $relation,
             $relation,
+            StringUtil::camelCaseToSnakeCase($relation, StringUtil::UPPERCASE),
             StringUtil::camelCaseToSnakeCase($relation, StringUtil::UPPERCASE),
             ucfirst($relation)
         );

@@ -13,26 +13,27 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'make:meta:notifiable-relation-complex',
-    description: 'Add a short description for your command',
+    description: 'Make notifiable relation events, handlers and controllers',
 )]
 class MakeMetaNotifiableRelationComplexCommand extends Command
 {
     protected function configure(): void
     {
         $this
-            ->addArgument('prefix', InputArgument::REQUIRED, 'Name prefix')
+            ->addArgument('relation', InputArgument::REQUIRED, 'Relation name')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $prefix = $input->getArgument('prefix');
+        $relation = $input->getArgument('relation');
 
-        $this->createEvents($prefix, $output);
-        $this->createEventHandlers($prefix, $output);
-        $this->createBreakRelationControllers($prefix, $output);
-        $this->createMakeRelationControllers($prefix, $output);
+        $this->createEvents($relation, $output);
+        $this->createEventHandlers($relation, $output);
+        $this->createControllers($relation, $output);
+        $this->createRelationVoter($relation, $output);
+        $this->updateApiRoutes($relation, $output);
 
         $io->success('Everything done');
 
@@ -49,9 +50,12 @@ class MakeMetaNotifiableRelationComplexCommand extends Command
         $this->createElements($name, $output, 'make:notifiable-event-handler');
     }
 
-    private function createBreakRelationControllers(string $name, OutputInterface $output): void
+    private function createControllers(string $name, OutputInterface $output): void
     {
-        $this->createElements($name, $output, 'make:break-relation-controller', ['Break']);
+        foreach (['break', 'accept', 'request'] as $action) {
+            $command = $this->getApplication()->find('make:'.$action.'-relation-controller');
+            $command->run(new ArrayInput(['relation' => $name]), $output);
+        }
     }
 
     private function createMakeRelationControllers(string $name, OutputInterface $output): void
@@ -60,8 +64,21 @@ class MakeMetaNotifiableRelationComplexCommand extends Command
             ['Accept', 'Request']);
     }
 
+    private function createRelationVoter(string $name, OutputInterface $output): void
+    {
+        $command = $this->getApplication()->find('make:relation-voter');
+
+        $command->run(new ArrayInput(['relation' => $name]), $output);
+    }
+
+    private function updateApiRoutes(string $name, OutputInterface $output): void
+    {
+        $this->createElements($name, $output, 'make:user-relation-api', 
+            ['Break', 'Accept', 'Request']);
+    }
+
     private function createElements(
-        string $name, 
+        string $relation, 
         OutputInterface $output,
         string $commandName,
         array $prefixes = ['Break', 'Accept', 'Request']
@@ -70,7 +87,7 @@ class MakeMetaNotifiableRelationComplexCommand extends Command
         $command = $this->getApplication()->find($commandName);
 
         foreach ($prefixes as $prefix) {
-            $command->run(new ArrayInput(['prefix' => $prefix.$name]), $output);
+            $command->run(new ArrayInput(['relation' => $prefix.$relation]), $output);
         }
     }
 }

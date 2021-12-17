@@ -2,41 +2,54 @@
 
 namespace App\Controller\Relation;
 
+use App\Entity\User;
 use App\Controller\Relation\MakeUserUserRelationController;
 use App\Entity\UserSubjectRelation;
-use App\Event\User\Relation\RequestFriendshipEvent;
+use Symfony\Component\HttpFoundation\Request;
+use App\Event\User\Relation\RequestFriendRelationEvent;
 
-class RequestFriendshipController extends MakeUserUserRelationController
+class RequestFriendRelationController extends MakeUserUserRelationController
 {
     protected function getEventClass(): string
     {
-        return RequestFriendshipEvent::class;
+        return RequestFriendRelationEvent::class;
     }
 
     protected function getLoggedUserCreateRelations(): array
     {
         return [
-            UserSubjectRelation::REQUEST_FRIENDSHIP,
+            UserSubjectRelation::REQUEST_FRIEND,
         ];
     }
 
     protected function getSubjectUserCreateRelations(): array
     {
-        return [];
+        return [
+            
+        ];
     }
 
     protected function getLoggedUserDeleteRelations(): array
     {
-        return [];
+        return [
+            
+        ];
     }
 
     protected function getSubjectUserDeleteRelations(): array
     {
-        return [];
+        return [
+            
+        ];
     }
     
     protected function getResponseKey(): string
     {
-        return 'notification.success.friendshipRequested';
+        return 'notification.success.relation.requestFriend';
+    }
+
+    protected function additionalAction(User $user, Request $request): void
+    {
+        //
     }
 }

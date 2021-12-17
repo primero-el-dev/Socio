@@ -12,14 +12,14 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use App\Util\StringUtil;
 
 #[AsCommand(
-    name: 'make:break-relation-controller',
-    description: 'Make controller for breaking user-user relation',
+    name: 'make:relation-voter',
+    description: 'Make a voter for relation',
 )]
-class MakeBreakRelationControllerCommand extends Command
+class MakeRelationVoterCommand extends Command
 {
     public function __construct(private string $projectDir)
     {
-        parent::__construct('make:break-relation-controller');
+        parent::__construct('make:relation-voter');
     }
 
     protected function configure(): void
@@ -35,19 +35,19 @@ class MakeBreakRelationControllerCommand extends Command
         $relation = $input->getArgument('relation');
 
         if (file_exists($this->getPath($relation))) {
-            $io->error('Controller already exists');
+            $io->error('Voter already exists');
 
             return Command::FAILURE;
         }
 
-        $this->createEvent($relation);
+        $this->createVoter($relation);
 
-        $io->success('Controller created');
+        $io->success('Voter created');
 
         return Command::SUCCESS;
     }
 
-    private function createEvent(string $relation): void
+    private function createVoter(string $relation): void
     {
         file_put_contents($this->getPath($relation), $this->getTemplate($relation));
     }
@@ -55,7 +55,7 @@ class MakeBreakRelationControllerCommand extends Command
     private function getPath(string $relation): string
     {
         return sprintf(
-            '%s/src/Controller/Relation/%sRelationController.php',
+            '%s/src/Security/Voter/Relation/%sRelationVoter.php',
             $this->projectDir,
             $relation
         );
@@ -65,51 +65,38 @@ class MakeBreakRelationControllerCommand extends Command
     {
         return sprintf('<?php
 
-namespace App\Controller\Relation;
+namespace App\Security\Voter\Relation;
 
-use App\Entity\User;
 use App\Entity\UserSubjectRelation;
-use App\Controller\Relation\BreakUserUserRelationController;
-use Symfony\Component\HttpFoundation\Request;
-use App\Event\User\Relation\Break%sRelationEvent;
+use App\Security\Voter\Relation\RelationVoter;
 
-class Break%sRelationController extends BreakUserUserRelationController
+class %sRelationVoter extends RelationVoter
 {
-    protected function getEventClass(): string
-    {
-        return Break%sRelationEvent::class;
-    }
-
-    protected function getLoggedUserDeleteRelations(): array
+    protected function getRoles(): array
     {
         return [
-            UserSubjectRelation::%s,
+            \'request_relation\' => \'REQUEST_%s_RELATION\',
+            \'accept_relation\' => \'ACCEPT_%s_RELATION\',
+            \'break_relation\' => \'BREAK_%s_RELATION\',
         ];
     }
 
-    protected function getSubjectUserDeleteRelations(): array
+    protected function getRelationRequest(): string
     {
-        return [
-
-        ];
-    }
-    
-    protected function getResponseKey(): string
-    {
-        return \'notification.success.relation.break%s\';
+        return UserSubjectRelation::REQUEST_%s;
     }
 
-    protected function additionalAction(User $user, Request $request): void
+    protected function getRealizedRelation(): string
     {
-        //
+        return UserSubjectRelation::%s;
     }
-}
-',
-            $relation,
-            $relation,
+}',
             $relation,
             StringUtil::camelCaseToSnakeCase($relation, StringUtil::UPPERCASE),
-            ucfirst($relation)
+            StringUtil::camelCaseToSnakeCase($relation, StringUtil::UPPERCASE),
+            StringUtil::camelCaseToSnakeCase($relation, StringUtil::UPPERCASE),
+            StringUtil::camelCaseToSnakeCase($relation, StringUtil::UPPERCASE),
+            StringUtil::camelCaseToSnakeCase($relation, StringUtil::UPPERCASE)
         );
     }
 }

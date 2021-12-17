@@ -31,9 +31,11 @@ class UserSubjectRelation implements Entity
     public const APPROVE_COMMENT = 'APPROVE_COMMENT';
     public const BAN_COMMENT = 'BAN_COMMENT';
 
-    public const REQUEST_FRIENDSHIP = 'REQUEST_FRIENDSHIP';
+    public const REQUEST_FRIEND = 'REQUEST_FRIEND';
     public const FRIEND = 'FRIEND';
+    public const REQUEST_MOTHER = 'REQUEST_MOTHER';
     public const MOTHER = 'MOTHER';
+    public const REQUEST_FATHER = 'REQUEST_FATHER';
     public const FATHER = 'FATHER';
     public const SON = 'SON';
     public const DAUGHTER = 'DAUGHTER';
