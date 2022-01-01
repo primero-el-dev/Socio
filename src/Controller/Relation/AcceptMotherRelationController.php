@@ -15,28 +15,28 @@ class AcceptMotherRelationController extends MakeUserUserRelationController
         return AcceptMotherRelationEvent::class;
     }
 
-    protected function getLoggedUserCreateRelations(): array
+    protected function getLoggedUserCreateRelations(User $user, User $subject): array
     {
         return [
             
         ];
     }
 
-    protected function getSubjectUserCreateRelations(): array
+    protected function getSubjectUserCreateRelations(User $user, User $subject): array
     {
         return [
             UserSubjectRelation::MOTHER,
         ];
     }
 
-    protected function getLoggedUserDeleteRelations(): array
+    protected function getLoggedUserDeleteRelations(User $user, User $subject): array
     {
         return [
             
         ];
     }
 
-    protected function getSubjectUserDeleteRelations(): array
+    protected function getSubjectUserDeleteRelations(User $user, User $subject): array
     {
         return [
             UserSubjectRelation::REQUEST_MOTHER,

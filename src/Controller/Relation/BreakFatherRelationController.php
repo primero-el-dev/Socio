@@ -6,23 +6,23 @@ use App\Entity\User;
 use App\Entity\UserSubjectRelation;
 use App\Controller\Relation\BreakUserUserRelationController;
 use Symfony\Component\HttpFoundation\Request;
-use App\Event\User\Relation\BreakFriendRelationEvent;
+use App\Event\User\Relation\BreakFatherRelationEvent;
 
-class FriendRelationController extends BreakUserUserRelationController
+class BreakFatherRelationController extends BreakUserUserRelationController
 {
     protected function getEventClass(): string
     {
-        return BreakFriendRelationEvent::class;
+        return BreakFatherRelationEvent::class;
     }
 
-    protected function getLoggedUserDeleteRelations(): array
+    protected function getLoggedUserDeleteRelations(User $user, User $subject): array
     {
         return [
-            UserSubjectRelation::FRIEND,
+            UserSubjectRelation::FATHER,
         ];
     }
 
-    protected function getSubjectUserDeleteRelations(): array
+    protected function getSubjectUserDeleteRelations(User $user, User $subject): array
     {
         return [
 
@@ -31,7 +31,7 @@ class FriendRelationController extends BreakUserUserRelationController
     
     protected function getResponseKey(): string
     {
-        return 'notification.success.relation.breakFriend';
+        return 'notification.success.relation.breakFather';
     }
 
     protected function additionalAction(User $user, Request $request): void

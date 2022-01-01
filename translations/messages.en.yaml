@@ -1,20 +1,20 @@
 common:
-  yes: 'yes'
-  no: 'no'
-  submit: 'Submit'
-  success: 'Success'
-  error: 'Error'
-
+  'yes': 'yes'
+  'no': 'no'
+  submit: Submit
+  success: Success
+  error: Error
 notification:
   error:
     phoneMissing: 'Phone missing. Please provide a phone number.'
     smsCodeMissing: 'Sms code is missing.'
     smsCodeInvalid: 'Sms code is invalid.'
     groupMembershipRequestMissing: 'Group membership request wasn''t found.'
+    fileMissing: 'File "%s" is required.'
   info:
     phoneAlreadyVerified: 'Your phone number has been already verified.'
     groupMembershipRequested: 'You have already requested membership to this group.'
-    groupMembershipRequestReady: 
+    groupMembershipRequestReady:
       subject: 'Membership request'
       content: 'You''ve requested membership for a group "%s".'
     groupMembershipAccepted:
@@ -39,26 +39,37 @@ notification:
       breakMother:
         subject: 'Mother relation broken'
         content: 'User "%s" is now not Your mother.'
+      requestFather:
+        subject: 'User "%s" send you father relation request'
+        content: 'User "%s" send you father relation request.'
+      acceptFather:
+        subject: 'Father relation accepted'
+        content: 'User "%s" is now Your father.'
+      breakFather:
+        subject: 'Father relation broken'
+        content: 'User "%s" is now not Your father.'
   success:
     resetPassword: 'Password was changed successfully.'
-    forgotPassword: "We've send You an email for changing password."
-    registered: "Your account has been created successfully. We've send verification email to You."
+    forgotPassword: 'We''ve send You an email for changing password.'
+    registered: 'Your account has been created successfully. We''ve send verification email to You.'
     verifyEmail: 'Your email has been verified.'
     commentAlreadyReported: 'Comment has been already reported.'
     phoneVerificationSmsSend: 'Check Your phone for sms code.'
     phoneVerifiedSuccessfully: 'You phone number has been verified successfully.'
-    membershipRequestedSuccessfully: "You've requested a membership for group successfully."
+    membershipRequestedSuccessfully: 'You''ve requested a membership for group successfully.'
     groupMemberAccepted: 'You''re now a member of a "%s".'
-    quitGroup: "You've escaped group."
+    quitGroup: 'You''ve escaped group.'
     removeMember: 'Member was removed successfully.'
     relation:
       requestFriend: 'Your friend request has been send.'
       acceptFriend: 'Friendship request was accepted.'
-      breakFriend: "You've broken a relationship successfully."
+      breakFriend: 'You''ve broken a relationship successfully.'
       requestMother: 'Your mother request has been send.'
       acceptMother: 'Mother request was accepted.'
-      breakMother: "You've broken a mother relationship successfully."
-
+      breakMother: 'You''ve broken a mother relationship successfully.'
+      requestFather: 'Your father request has been send.'
+      acceptFather: 'Father request was accepted.'
+      breakFather: 'You''ve broken a father relationship successfully.'
 email:
   registrationVerification:
     subject: 'Email verification'

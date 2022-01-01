@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Token;
 use App\Entity\User;
+use App\Repository\BaseRepository;
 use App\Repository\Interface\TokenRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -14,7 +15,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Token[]    findAll()
  * @method Token[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class TokenRepository extends ServiceEntityRepository implements TokenRepositoryInterface
+class TokenRepository extends BaseRepository implements TokenRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -50,14 +51,9 @@ class TokenRepository extends ServiceEntityRepository implements TokenRepository
 
     public function deleteByTypeAndUserId(string $type, int $userId): void
     {
-        $qb = $this->createQueryBuilder('t');
-        $qb->delete()
-            ->where('t.type = :type')
-            ->andWhere('t.user = :userId')
-            ->setParameter(':type', $type)
-            ->setParameter(':userId', $userId);
-
-        $query = $qb->getQuery();
-        $query->execute();
+        $this->deleteBy([
+            'type' => $type,
+            'user' => $userId,
+        ]);
     }
 }

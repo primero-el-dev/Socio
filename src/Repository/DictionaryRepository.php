@@ -3,9 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Dictionary;
+use App\Repository\BaseRepository;
+use App\Repository\Interface\DictionaryRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use App\Repository\Interface\DictionaryRepositoryInterface;
 
 /**
  * @method Dictionary|null find($id, $lockMode = null, $lockVersion = null)
@@ -13,39 +14,10 @@ use App\Repository\Interface\DictionaryRepositoryInterface;
  * @method Dictionary[]    findAll()
  * @method Dictionary[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class DictionaryRepository extends ServiceEntityRepository implements DictionaryRepositoryInterface
+class DictionaryRepository extends BaseRepository implements DictionaryRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Dictionary::class);
     }
-
-    // /**
-    //  * @return Dictionary[] Returns an array of Dictionary objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('d')
-            ->andWhere('d.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('d.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Dictionary
-    {
-        return $this->createQueryBuilder('d')
-            ->andWhere('d.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

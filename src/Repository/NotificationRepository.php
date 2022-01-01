@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Notification;
+use App\Repository\BaseRepository;
 use App\Repository\Interface\NotificationRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -13,7 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Notification[]    findAll()
  * @method Notification[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class NotificationRepository extends ServiceEntityRepository implements NotificationRepositoryInterface
+class NotificationRepository extends BaseRepository implements NotificationRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {

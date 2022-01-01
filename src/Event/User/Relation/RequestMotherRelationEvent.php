@@ -10,6 +10,6 @@ class RequestMotherRelationEvent extends RelationActionEvent implements Notifiab
 {
     public function getType(): string
     {
-        return Notification::REQUEST_MOTHER;
+        return Notification::REQUEST_MOTHER_RELATION;
     }
 }

@@ -23,7 +23,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      name="`group`",
  *      uniqueConstraints={
  *          @ORM\UniqueConstraint(
- *              name="slug_unique", 
+ *              name="group_slug_unique", 
  *              columns={"slug"},
  *              options={"where": "(deleted_at IS NULL)"}
  *          )
@@ -51,7 +51,7 @@ class Group implements Entity, HasComments, HasConfiguration
      */
     #[Groups(['write:group', 'read:group'])]
     #[Assert\Length(
-        min: 10,
+        min: 5,
         max: 255,
         minMessage: 'entity.group.name.length.minMessage',
         maxMessage: 'entity.group.name.length.maxMessage'
@@ -71,14 +71,14 @@ class Group implements Entity, HasComments, HasConfiguration
     private ?string $slug;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     #[Groups(['write:group', 'read:group'])]
     #[Assert\Length(
         max: 2048,
         maxMessage: 'entity.group.description.length.maxMessage'
     )]
-    private ?string $description;
+    private ?string $description = '';
 
     /**
      * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="group")

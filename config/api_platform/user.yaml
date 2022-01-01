@@ -35,6 +35,12 @@ App\Entity\User:
       denormalization_context:
         groups:
           - 'delete:user'
+    upload_picture:
+      method: POST
+      controller: App\Controller\User\UploadProfilerPictureController
+      denormalization_context:
+        groups:
+          - 'write:user'
     break_friend_relation:
       security: 'is_granted("BREAK_FRIEND_RELATION", object)'
       path: '/users/{id}/break-friend-relation'
@@ -75,5 +81,26 @@ App\Entity\User:
       path: '/users/{id}/request-mother-relation'
       method: POST
       controller: App\Controller\Relation\RequestMotherRelationController
+      requirements:
+        id: \d+
+    break_father_relation:
+      security: 'is_granted("BREAK_FATHER_RELATION", object)'
+      path: '/users/{id}/break-father-relation'
+      method: POST
+      controller: App\Controller\Relation\BreakFatherRelationController
+      requirements:
+        id: \d+
+    accept_father_relation:
+      security: 'is_granted("ACCEPT_FATHER_RELATION", object)'
+      path: '/users/{id}/accept-father-relation'
+      method: POST
+      controller: App\Controller\Relation\AcceptFatherRelationController
+      requirements:
+        id: \d+
+    request_father_relation:
+      security: 'is_granted("REQUEST_FATHER_RELATION", object)'
+      path: '/users/{id}/request-father-relation'
+      method: POST
+      controller: App\Controller\Relation\RequestFatherRelationController
       requirements:
         id: \d+

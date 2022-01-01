@@ -40,6 +40,10 @@ class UserSubjectRelation implements Entity
     public const SON = 'SON';
     public const DAUGHTER = 'DAUGHTER';
 
+    public const READ_GROUP = 'READ_GROUP';
+    public const UPDATE_GROUP = 'UPDATE_GROUP';
+    public const DELETE_GROUP = 'DELETE_GROUP';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

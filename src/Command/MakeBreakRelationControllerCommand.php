@@ -55,7 +55,7 @@ class MakeBreakRelationControllerCommand extends Command
     private function getPath(string $relation): string
     {
         return sprintf(
-            '%s/src/Controller/Relation/%sRelationController.php',
+            '%s/src/Controller/Relation/Break%sRelationController.php',
             $this->projectDir,
             $relation
         );
@@ -80,14 +80,14 @@ class Break%sRelationController extends BreakUserUserRelationController
         return Break%sRelationEvent::class;
     }
 
-    protected function getLoggedUserDeleteRelations(): array
+    protected function getLoggedUserDeleteRelations(User $user, User $subject): array
     {
         return [
             UserSubjectRelation::%s,
         ];
     }
 
-    protected function getSubjectUserDeleteRelations(): array
+    protected function getSubjectUserDeleteRelations(User $user, User $subject): array
     {
         return [
 

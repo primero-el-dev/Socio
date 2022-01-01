@@ -58,11 +58,11 @@ abstract class BreakUserUserRelationController extends AbstractController
 
     protected function deleteListedRelations(User $first, User $second): void
     {
-        foreach ($this->getLoggedUserDeleteRelations() as $relation) {
+        foreach ($this->getLoggedUserDeleteRelations($first, $second) as $relation) {
             $this->deleteRelation($first, $second, $relation);
         }
         
-        foreach ($this->getSubjectUserDeleteRelations() as $relation) {
+        foreach ($this->getSubjectUserDeleteRelations($first, $second) as $relation) {
             $this->deleteRelation($second, $first, $relation);
         }
     }
@@ -78,9 +78,9 @@ abstract class BreakUserUserRelationController extends AbstractController
 
     abstract protected function getEventClass(): string;
     
-    abstract protected function getLoggedUserDeleteRelations(): array;
+    abstract protected function getLoggedUserDeleteRelations(User $user, User $subject): array;
 
-    abstract protected function getSubjectUserDeleteRelations(): array;
+    abstract protected function getSubjectUserDeleteRelations(User $user, User $subject): array;
     
     abstract protected function getResponseKey(): string;
 }

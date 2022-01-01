@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Relation;
+use App\Repository\BaseRepository;
 use App\Repository\Interface\RelationRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -13,39 +14,10 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Relation[]    findAll()
  * @method Relation[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class RelationRepository extends ServiceEntityRepository implements RelationRepositoryInterface
+class RelationRepository extends BaseRepository implements RelationRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Relation::class);
     }
-
-    // /**
-    //  * @return Relation[] Returns an array of Dictionary objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('d')
-            ->andWhere('d.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('d.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Dictionary
-    {
-        return $this->createQueryBuilder('d')
-            ->andWhere('d.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

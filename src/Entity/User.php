@@ -6,9 +6,11 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Entity\Entity;
 use App\Entity\Interface\HasConfiguration;
+use App\Entity\Interface\HasMediaObjects;
 use App\Entity\Timeline;
 use App\Entity\Trait\Configuration;
 use App\Entity\Trait\Create;
+use App\Entity\Trait\MediaObjects;
 use App\Entity\Trait\SoftDelete;
 use App\Entity\Trait\Update;
 use App\Repository\UserRepository;
@@ -35,22 +37,22 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  *      name="app_user",
  *      uniqueConstraints={
  *          @ORM\UniqueConstraint(
- *              name="login_unique", 
+ *              name="app_user_login_unique", 
  *              columns={"login"},
  *              options={"where": "(deleted_at IS NULL)"}
  *          ),
  *          @ORM\UniqueConstraint(
- *              name="email_unique", 
+ *              name="app_user_email_unique", 
  *              columns={"email"},
  *              options={"where": "(deleted_at IS NULL)"}
  *          ),
  *          @ORM\UniqueConstraint(
- *              name="slug_unique", 
+ *              name="app_user_slug_unique", 
  *              columns={"slug"},
  *              options={"where": "(deleted_at IS NULL)"}
  *          ),
  *          @ORM\UniqueConstraint(
- *              name="phone_unique", 
+ *              name="app_user_phone_unique", 
  *              columns={"phone"},
  *              options={"where": "(deleted_at IS NULL)"}
  *          )
@@ -63,12 +65,19 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
     'name' => 'partial',
     'surname' => 'partial',
 ])]
-class User implements Entity, HasConfiguration, UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface
+class User 
+implements Entity, 
+    HasConfiguration, 
+    HasMediaObjects, 
+    UserInterface, 
+    PasswordAuthenticatedUserInterface, 
+    JWTUserInterface
 {
     use Create;
     use Update;
     use SoftDelete;
     use Configuration;
+    use MediaObjects;
 
 
     /**
@@ -143,12 +152,6 @@ class User implements Entity, HasConfiguration, UserInterface, PasswordAuthentic
 
 
     /**
-     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="author")
-     */
-    protected Collection $posts;
-
-
-    /**
      * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="author")
      */
     protected Collection $comments;
@@ -204,24 +207,6 @@ class User implements Entity, HasConfiguration, UserInterface, PasswordAuthentic
     protected array $configuration = [];
 
 
-    #[ApiProperty(iri: 'http://schema.org/contentUrl')]
-    #[Groups(['book:read'])]
-    public ?string $contentUrl = null;
-
-
-    /**
-     * @Vich\UploadableField(mapping="media_object", fileNameProperty="filePath")
-     */
-    #[Groups(['book:write'])]
-    public ?File $file = null;
-
-
-    /**
-     * @ORM\Column(nullable=true)
-     */
-    public ?string $filePath = null;
-
-
     /**
      * @ORM\Column(type="string", length=255)
      */
@@ -240,6 +225,7 @@ class User implements Entity, HasConfiguration, UserInterface, PasswordAuthentic
         maxMessage: 'entity.user.slug.length.maxMessage'
     )]
     private ?string $slug;
+
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -271,10 +257,13 @@ class User implements Entity, HasConfiguration, UserInterface, PasswordAuthentic
     private ?string $gender;
 
 
+    #[Groups(['read:user'])]
+    private array $mediaObjects = [];
+
+
     public function __construct()
     {
         $this->roles = Roles::getDefaultForUser();
-        $this->posts = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->reactions = new ArrayCollection();
         $this->notifications = new ArrayCollection();
@@ -449,36 +438,6 @@ class User implements Entity, HasConfiguration, UserInterface, PasswordAuthentic
     public function getAge(): int
     {
         return (int) date_diff($this->birth, new \DateTime(), true)->format('y');
-    }
-
-    /**
-     * @return Collection|Post[]
-     */
-    public function getPosts(): Collection
-    {
-        return $this->posts;
-    }
-
-    public function addPost(Post $post): self
-    {
-        if (!$this->posts->contains($post)) {
-            $this->posts[] = $post;
-            $post->setAuthor($this);
-        }
-
-        return $this;
-    }
-
-    public function removePost(Post $post): self
-    {
-        if ($this->posts->removeElement($post)) {
-            // set the owning side to null (unless already changed)
-            if ($post->getAuthor() === $this) {
-                $post->setAuthor(null);
-            }
-        }
-
-        return $this;
     }
 
     /**

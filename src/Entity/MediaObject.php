@@ -15,6 +15,19 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  */
 class MediaObject
 {
+    public const MEDIA_PATH = 'media';
+
+    public const PROFILE_PICTURE_TYPE = 'PROFILE_PICTURE_TYPE';
+    public const BACKGROUND_PICTURE_TYPE = 'BACKGROUND_PICTURE_TYPE';
+    public const GALLERY_PICTURE_TYPE = 'GALLERY_PICTURE_TYPE';
+    public const COMMENT_PICTURE_TYPE = 'COMMENT_PICTURE_TYPE';
+    public const GALLERY_VIDEO_TYPE = 'GALLERY_VIDEO_TYPE';
+    public const COMMENT_VIDEO_TYPE = 'COMMENT_VIDEO_TYPE';
+    public const GALLERY_GIF_TYPE = 'GALLERY_GIF_TYPE';
+    public const COMMENT_GIF_TYPE = 'COMMENT_GIF_TYPE';
+    public const APP_GIF_TYPE = 'APP_GIF_TYPE';
+    public const APP_STICKER_TYPE = 'APP_STICKER_TYPE';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -23,17 +36,19 @@ class MediaObject
     private ?int $id;
 
     #[ApiProperty(iri: 'http://schema.org/contentUrl')]
-    #[Groups(['media_object:read'])]
-    public ?string $contentUrl = null;
+    #[Groups(['read:media_object'])]
+    private ?string $contentUrl = null;
 
     /**
      * @Vich\UploadableField(mapping="media_object", fileNameProperty="filePath")
      */
-    #[Assert\NotNull(groups: ['media_object_create'])]
+    #[Assert\NotNull(
+        message: 'entity.mediaObject.file.notNull.message',
+        groups: ['create:media_object']
+    )]
     #[Assert\File(
         maxSize: '1024k',
-        mimeTypes: ['image/png', 'image/jpeg', 'image/jpg'],
-        mimeTypesMessage: 'Please upload a valid PDF or valid IMAGE'
+        maxSizeMessage: ''
     )]
     public ?File $file = null;
 
@@ -42,19 +57,54 @@ class MediaObject
      */
     public ?string $filePath = null;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    #[Assert\NotNull(message: 'entity.mediaObject.ownerIri.notNull.message')]
+    private ?string $ownerIri;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private ?string $type;
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getFilePath(?string $filePath): ?string
+    public function getContentUrl(): ?string
     {
-        return $this->filePath;
+        return $this->contentUrl;
     }
 
-    public function setFilePath(?string $filePath): self
+    public function setContentUrl(string $contentUrl): self
     {
-        $this->filePath = $filePath;
+        $this->contentUrl = $contentUrl;
+
+        return $this;
+    }
+
+    public function getOwnerIri(): ?string
+    {
+        return $this->ownerIri;
+    }
+
+    public function setOwnerIri(string $ownerIri): self
+    {
+        $this->ownerIri = $ownerIri;
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }

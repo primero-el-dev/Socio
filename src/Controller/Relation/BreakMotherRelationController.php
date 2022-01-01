@@ -15,14 +15,14 @@ class BreakMotherRelationController extends BreakUserUserRelationController
         return BreakMotherRelationEvent::class;
     }
 
-    protected function getLoggedUserDeleteRelations(): array
+    protected function getLoggedUserDeleteRelations(User $user, User $subject): array
     {
         return [
             UserSubjectRelation::MOTHER,
         ];
     }
 
-    protected function getSubjectUserDeleteRelations(): array
+    protected function getSubjectUserDeleteRelations(User $user, User $subject): array
     {
         return [
 

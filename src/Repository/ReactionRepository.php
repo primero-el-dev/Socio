@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Comment;
 use App\Entity\Reaction;
 use App\Entity\User;
+use App\Repository\BaseRepository;
 use App\Repository\Interface\ReactionRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -15,7 +16,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Reaction[]    findAll()
  * @method Reaction[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ReactionRepository extends ServiceEntityRepository implements ReactionRepositoryInterface
+class ReactionRepository extends BaseRepository implements ReactionRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -24,53 +25,17 @@ class ReactionRepository extends ServiceEntityRepository implements ReactionRepo
 
     public function deleteForUserAndComment(User $user, Comment $comment): void
     {
-        $qb = $this->createQueryBuilder('r')
-            ->delete()
-            ->where('r.comment = :commentId')
-            ->andWhere('r.author = :authorId')
-            ->setParameter('commentId', $comment->getId())
-            ->setParameter('authorId', $user->getId())
-            ->getQuery()
-            ->getResult();
+        $this->deleteBy([
+            'comment' => $comment->getId(),
+            'author' => $user->getId(),
+        ]);
     }
 
     public function getForUserAndComment(User $user, Comment $comment): ?Reaction
     {
-        return $this->createQueryBuilder('r')
-            ->where('r.comment = :commentId')
-            ->andWhere('r.author = :authorId')
-            ->setParameter('commentId', $comment->getId())
-            ->setParameter('authorId', $user->getId())
-            ->getQuery()
-            ->getOneOrNullResult();
+        return $this->findBy([
+            'comment' => $comment->getId(),
+            'author' => $user->getId(),
+        ]);
     }
-
-    // /**
-    //  * @return Reaction[] Returns an array of Reaction objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('r.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Reaction
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

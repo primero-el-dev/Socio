@@ -6,6 +6,7 @@ use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Entity\Entity;
 use App\Entity\User;
 use App\Entity\UserSubjectRelation;
+use App\Repository\BaseRepository;
 use App\Repository\Interface\UserSubjectRelationRepositoryInterface;
 use App\Util\EntityUtils;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -17,7 +18,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method UserSubjectRelation[]    findAll()
  * @method UserSubjectRelation[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class UserSubjectRelationRepository extends ServiceEntityRepository 
+class UserSubjectRelationRepository extends BaseRepository 
 implements UserSubjectRelationRepositoryInterface
 {
     public function __construct(

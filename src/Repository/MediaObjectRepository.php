@@ -2,7 +2,11 @@
 
 namespace App\Repository;
 
+use ApiPlatform\Core\Api\IriConverterInterface;
+use App\Entity\Interface\HasMediaObjects;
 use App\Entity\MediaObject;
+use App\Repository\BaseRepository;
+use App\Repository\Interface\MediaObjectRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -12,39 +16,20 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method MediaObject[]    findAll()
  * @method MediaObject[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class MediaObjectRepository extends ServiceEntityRepository
+class MediaObjectRepository extends BaseRepository implements MediaObjectRepositoryInterface
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(
+        ManagerRegistry $registry,
+        private IriConverterInterface $iriConverter
+    )
     {
         parent::__construct($registry, MediaObject::class);
     }
 
-    // /**
-    //  * @return MediaObject[] Returns an array of MediaObject objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findByOwner(HasMediaObjects $object): array
     {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('m.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        return $this->findBy([
+            'owner_iri' => $this->iriConverter->getIriFromItem($object),
+        ]);
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?MediaObject
-    {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

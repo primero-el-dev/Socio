@@ -17,4 +17,11 @@ class ConfigurationManager
 			],
 		];
 	}
+
+	public static function getDefaultForGroup(): array
+	{
+		return [
+			//
+		];
+	}
 }

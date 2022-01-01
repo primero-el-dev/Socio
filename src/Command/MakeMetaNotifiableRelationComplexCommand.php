@@ -34,6 +34,7 @@ class MakeMetaNotifiableRelationComplexCommand extends Command
         $this->createControllers($relation, $output);
         $this->createRelationVoter($relation, $output);
         $this->updateApiRoutes($relation, $output);
+        $this->createTranslations($relation, $output);
 
         $io->success('Everything done');
 
@@ -67,7 +68,6 @@ class MakeMetaNotifiableRelationComplexCommand extends Command
     private function createRelationVoter(string $name, OutputInterface $output): void
     {
         $command = $this->getApplication()->find('make:relation-voter');
-
         $command->run(new ArrayInput(['relation' => $name]), $output);
     }
 
@@ -89,5 +89,11 @@ class MakeMetaNotifiableRelationComplexCommand extends Command
         foreach ($prefixes as $prefix) {
             $command->run(new ArrayInput(['relation' => $prefix.$relation]), $output);
         }
+    }
+
+    private function createTranslations(string $relation, OutputInterface $output): void
+    {
+        $command = $this->getApplication()->find('make:notifiable-event-translations');
+        $command->run(new ArrayInput(['relation' => $relation]), $output);
     }
 }

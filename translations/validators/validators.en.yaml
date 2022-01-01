@@ -79,3 +79,10 @@ entity:
       length:
         minMessage: 'Group slug must be at least {{ limit }} characters long.'
         maxMessage: 'Group slug must be at most {{ limit }} characters long.'
+  mediaObject:
+    file:
+      notNull:
+        message: 'File is missing.'
+    ownerIri:
+      notNull:
+        message: 'Owner iri is missing.'

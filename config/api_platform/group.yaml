@@ -11,6 +11,7 @@ App\Entity\Group:
         groups: ['read:group']
     post:
       # security: "is_granted('GROUP_CREATE')"
+      controller: App\Controller\Group\CreateGroupController
       denormalization_context:
         groups: ['insert:group', 'write:group']
   itemOperations:

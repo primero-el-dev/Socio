@@ -55,7 +55,13 @@ abstract class RelationVoter extends Voter
 
         return !EntityUtils::areSame($user, $subject) && 
             $hasRelation($subject, $this->getRelationRequest(), $user) &&
-            !$hasRelation($subject, $this->getRealizedRelation(), $user);
+            !$hasRelation($subject, $this->getRealizedRelation(), $user) &&
+            $this->additionalRestrictions($user, $subject);
+    }
+
+    protected function additionalRestrictions(User $user, User $subject): bool
+    {
+        return true;
     }
 
     protected function canBreakRelation(User $user, User $subject): bool

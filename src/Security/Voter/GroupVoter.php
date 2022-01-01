@@ -5,6 +5,7 @@ namespace App\Security\Voter;
 use App\Entity\Entity;
 use App\Entity\Group;
 use App\Entity\User;
+use App\Entity\UserSubjectRelation;
 use App\Repository\Interface\UserSubjectRelationRepositoryInterface;
 use App\Security\PermissionManagerFacade;
 use App\Security\Roles;
@@ -56,32 +57,52 @@ class GroupVoter extends Voter
 
     private function canRead(User $user, Entity $subject): bool
     {
-        return ($user->hasRole('READ_GROUP') || 
-            EntityUtils::areSame($subject->getAuthor(), $user)) &&
-            $this->permissionManager->hasPermissionOnGroup($user, 'READ_GROUP', $subject);
+        $hasRelation = $this->hasRelation($user, $subject);
+        
+        return $user->hasRole('READ_GROUP') || 
+            $hasRelation(UserSubjectRelation::READ_GROUP);
     }
 
     private function canCreate(User $user): bool
     {
+        $user->addRole('CREATE_GROUP');
+        dd($user);
         return $user->hasRole('CREATE_GROUP');
     }
 
     private function canUpdate(User $user, Entity $subject): bool
     {
+        $hasRelation = $this->hasRelation($user, $subject);
+
         return $user->hasRole('UPDATE_GROUP') || 
-            EntityUtils::areSame($subject->getAuthor(), $user);
+            $hasRelation(UserSubjectRelation::UPDATE_GROUP);
     }
 
     private function canDelete(User $user, Entity $subject): bool
     {
+        $hasRelation = $this->hasRelation($user, $subject);
+
         return $user->hasRole('REQUEST_MEMBERSHIP') || 
-            EntityUtils::areSame($subject->getAuthor(), $user);
+            $hasRelation(UserSubjectRelation::DELETE_GROUP);
     }
 
     private function canRequestMembership(User $user, Entity $subject): bool
     {
+        $hasRelation = $this->hasRelation($user, $subject);
+
         return $user->hasRole('ROLE_VERIFIED') &&
-            !$this->relationRepository->userHasRelationWith($user, 'ROLE_USER', $subject, false) && 
-            !$this->relationRepository->userHasRelationWith($user, 'ROLE_ADMIN', $subject, false);
+            !$hasRelation(UserSubjectRelation::ROLE_USER) && 
+            !$hasRelation(UserSubjectRelation::ROLE_ADMIN);
+    }
+
+    private function hasRelation(User $user, Group $subject): callable
+    {
+        return (fn(User $user, Group $subject) => fn(string $relation): bool =>
+            $this->relationRepository->userHasRelationWith(
+                $user,
+                $relation,
+                $subject,
+                false
+            ))($user, $subject);
     }
 }
